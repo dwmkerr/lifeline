@@ -22,7 +22,6 @@ export default function Search() {
           Search
         </Button>
       </Stack>
-      <Typography level="body-sm">232 stays in Melbourne, Australia</Typography>
     </div>
   );
 }

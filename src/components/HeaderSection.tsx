@@ -10,10 +10,10 @@ export default function HeaderSection() {
         justifyContent="space-between"
         sx={{ width: "100%" }}
       >
-        <Typography level="h2">Rental properties</Typography>
+        <Typography level="h4">Add Events</Typography>
       </Stack>
       <Typography level="body-md" color="neutral">
-        Book your next stay at one of our properties.
+        Visualise and track key life events.
       </Typography>
     </Stack>
   );

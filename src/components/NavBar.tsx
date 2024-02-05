@@ -1,10 +1,24 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 import { Box, IconButton } from "@mui/joy";
 import Typography from "@mui/joy/Typography";
 import Avatar from "@mui/joy/Avatar";
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 
+import UserMenuDropdown from "../lib/UserMenuDropdown";
+import { LifelineRepository } from "../lib/LifelifeRepository";
+import { User, onAuthStateChanged } from "firebase/auth";
+
 export default function HeaderSection() {
+  const repository = new LifelineRepository();
+  const [user, setUser] = useState<User | null>(repository.getUser() || null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(repository.getAuth(), (user) => {
+      setUser(user || null);
+    });
+
+    return () => unsubscribe();
+  }, []);
   return (
     <Box
       sx={{
@@ -35,28 +49,12 @@ export default function HeaderSection() {
           <MapsHomeWorkIcon />
         </IconButton>
         <Typography component="h1" fontWeight="xl">
-          Acme Rental
+          Lifeline
         </Typography>
       </Box>
 
       <Box sx={{ display: "flex", flexDirection: "row", gap: 3 }}>
-        <Box
-          sx={{
-            gap: 1,
-            alignItems: "center",
-            display: { xs: "none", sm: "flex" },
-          }}
-        >
-          <Avatar
-            variant="outlined"
-            size="sm"
-            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
-          />
-          <Box sx={{ minWidth: 0, flex: 1 }}>
-            <Typography level="title-sm">Siriwat K.</Typography>
-            <Typography level="body-xs">siriwatk@test.com</Typography>
-          </Box>
-        </Box>
+        <UserMenuDropdown user={user || undefined} />
       </Box>
     </Box>
   );
