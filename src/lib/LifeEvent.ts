@@ -1,26 +1,31 @@
 export interface LifeEvent {
   userId: string;
   id: string;
+  category: string | null;
   title: string;
   date: Date;
+  year: number;
+  month: number | null;
+  day: number | null;
   notes: string | null;
 }
 
 export interface SerializableLifeEvent {
   userId: string;
   id: string;
+  category: string | null;
   title: string;
   date: string;
+  year: number;
+  month: number | null;
+  day: number | null;
   notes: string | null;
 }
 
 export function toSerializableObject(event: LifeEvent): SerializableLifeEvent {
   return {
-    userId: event.userId,
-    id: event.id,
-    title: event.title,
+    ...event,
     date: event.date.toISOString(),
-    notes: event.notes,
   };
 }
 
@@ -32,7 +37,7 @@ export function toSerializableObject(event: LifeEvent): SerializableLifeEvent {
 type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>;
 export type MinimumSerializableLifeEvent = AtLeast<
   SerializableLifeEvent,
-  "userId" | "id" | "title" | "date"
+  "userId" | "id" | "title" | "date" | "year"
 >;
 export function fromSerializableObject(
   object: MinimumSerializableLifeEvent,
@@ -55,10 +60,11 @@ export function fromSerializableObject(
   //  added to the extension since the puzzle was initially logged). This is
   //  also covered in the unit tests.
   return {
-    userId: object.userId,
-    id: object.id,
-    title: object.title,
+    ...object,
+    category: object.category || null,
     date: object.date ? parseDateString(object, "date") : new Date(),
-    notes: object.notes || "",
+    month: object.month || null,
+    day: object.day || null,
+    notes: object.notes || null,
   };
 }

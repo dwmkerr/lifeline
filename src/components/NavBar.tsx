@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, IconButton } from "@mui/joy";
 import Typography from "@mui/joy/Typography";
-import Avatar from "@mui/joy/Avatar";
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 
 import UserMenuDropdown from "../lib/UserMenuDropdown";
@@ -9,7 +8,7 @@ import { LifelineRepository } from "../lib/LifelifeRepository";
 import { User, onAuthStateChanged } from "firebase/auth";
 
 export default function HeaderSection() {
-  const repository = new LifelineRepository();
+  const repository = LifelineRepository.getInstance();
   const [user, setUser] = useState<User | null>(repository.getUser() || null);
 
   useEffect(() => {

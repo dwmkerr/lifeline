@@ -25,12 +25,7 @@ import {
   fromSerializableObject,
   SerializableLifeEvent,
 } from "./LifeEvent";
-import {
-  GoogleAuthProvider,
-  Unsubscribe,
-  User,
-  signInWithCredential,
-} from "firebase/auth";
+import { GoogleAuthProvider, Unsubscribe, User } from "firebase/auth";
 import { LifelineError } from "./Errors";
 
 const lifeEventConverter = {
@@ -49,16 +44,18 @@ const lifeEventConverter = {
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyAy-ANZoEBRhB43WXaQ7FCjYX4-Vo3T5s8",
-  authDomain: "puzlog.firebaseapp.com",
-  projectId: "puzlog",
-  storageBucket: "puzlog.appspot.com",
-  messagingSenderId: "1076573815185",
-  appId: "1:1076573815185:web:36e623b00cc43fb71d5a30",
-  measurementId: "G-BZYWGBHV98",
+  apiKey: "AIzaSyD6Wvyid5gqzPC4JWZBoYHvivI7vPGybTk",
+  authDomain: "lifeline-dwmkerr.firebaseapp.com",
+  // databaseURL:
+  //   "https://lifeline-dwmkerr-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "lifeline-dwmkerr",
+  storageBucket: "lifeline-dwmkerr.appspot.com",
+  messagingSenderId: "43519542082",
+  appId: "1:43519542082:web:4506c47c35dbb914963edb",
 };
 
 export class LifelineRepository {
+  private static instance: LifelineRepository;
   public app: FirebaseApp;
   public auth: Auth;
   public db: Firestore;
@@ -67,7 +64,7 @@ export class LifelineRepository {
     SerializableLifeEvent
   >;
 
-  constructor() {
+  private constructor() {
     this.app = initializeApp(firebaseConfig);
     this.auth = getAuth();
     this.db = getFirestore();
@@ -75,6 +72,14 @@ export class LifelineRepository {
     this.lifeEventsCollection = collection(this.db, "lifeevents").withConverter(
       lifeEventConverter,
     );
+  }
+
+  public static getInstance(): LifelineRepository {
+    if (!LifelineRepository.instance) {
+      LifelineRepository.instance = new LifelineRepository();
+    }
+
+    return LifelineRepository.instance;
   }
 
   async load(): Promise<LifeEvent[]> {
@@ -111,11 +116,21 @@ export class LifelineRepository {
     await deleteDoc(docRef);
   }
 
-  async create(lifeEventWithoutId: Omit<LifeEvent, "id">): Promise<LifeEvent> {
+  async create(
+    lifeEventWithoutId: Omit<LifeEvent, "id" | "userId">,
+  ): Promise<LifeEvent> {
+    const uid = this.getUser()?.uid;
+    if (!uid) {
+      throw new LifelineError(
+        "Create Event Error",
+        "uid is null, cannot save to db",
+      );
+    }
     const newDocumentReference = doc(this.lifeEventsCollection);
     const lifeEvent: LifeEvent = {
       ...lifeEventWithoutId,
       id: newDocumentReference.id,
+      userId: uid,
     };
 
     //  Store in firebase and we're done.

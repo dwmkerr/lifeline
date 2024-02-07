@@ -9,8 +9,12 @@ export class LifelineError extends Error {
   }
 
   public static fromError(title: string, err: unknown): LifelineError {
-    //  Cast the internal error into an error object.
+    //  Cast the internal error into an error object or return it if it is
+    //  already one.
     const error = err as Error;
+    if (error instanceof LifelineError) {
+      return error;
+    }
     return new LifelineError(title, error?.message || "Unknown error", error);
   }
 }

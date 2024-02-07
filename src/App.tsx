@@ -8,15 +8,53 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/joy/Grid";
 import Stack from "@mui/joy/Stack";
 
-import { AlertContextProvider } from "./components/AlertContext";
+import {
+  AlertContextProvider,
+  useAlertContext,
+} from "./components/AlertContext";
 import BasicTimeline from "./components/BasicTimeline";
 import NavBar from "./components/NavBar";
-import HeaderSection from "./components/HeaderSection";
-import Search from "./components/Search";
+import AddLifeEvent from "./components/AddLifeEvent";
 import Filters from "./components/Filters";
 import Pagination from "./components/Pagination";
+import { AlertSnackbar } from "./components/AlertSnackbar";
+import { LifelineRepository } from "./lib/LifelifeRepository";
+import { useEffect, useState } from "react";
+import { LifeEvent } from "./lib/LifeEvent";
 
 const materialTheme = materialExtendTheme();
+
+const AppContainer = () => {
+  const repository = LifelineRepository.getInstance();
+  const { alertInfo, setAlertInfo } = useAlertContext();
+
+  const [lifeEvents, setLifeEvents] = useState<LifeEvent[]>([]);
+
+  useEffect(() => {
+    const unsubscribe = repository.subscribeToLifeEvents((lifeEvents) => {
+      setLifeEvents(lifeEvents);
+    });
+    return unsubscribe;
+  }, []);
+
+  return (
+    <Stack direction="column" alignItems="center" flexGrow={1}>
+      <Stack spacing={2} sx={{ px: { xs: 2, md: 4 }, pt: 2, minHeight: 0 }}>
+        <Filters />
+      </Stack>
+      <Stack spacing={2} sx={{ overflow: "auto", flexGrow: 1 }}>
+        <BasicTimeline lifeEvents={lifeEvents} />
+      </Stack>
+      <Pagination />
+      {alertInfo && (
+        <AlertSnackbar
+          alertInfo={alertInfo}
+          onDismiss={() => setAlertInfo(null)}
+        />
+      )}
+    </Stack>
+  );
+};
 
 export default function RentalDashboard() {
   return (
@@ -26,41 +64,18 @@ export default function RentalDashboard() {
           <CssBaseline enableColorScheme />
           <CssBaseline />
           <NavBar />
-          <Grid
+          <Stack
             component="main"
-            container
+            direction="column"
             sx={{
-              height: "calc(100vh - 55px)", // 55px is the height of the NavBar
-              gridTemplateRows: "auto 1fr auto",
+              height: "100%",
             }}
           >
             <Grid md={12}>
-              <Stack
-                sx={{
-                  backgroundColor: "background.surface",
-                  px: { xs: 2, md: 4 },
-                  py: 2,
-                  borderBottom: "1px solid",
-                  borderColor: "divider",
-                }}
-              >
-                <HeaderSection />
-                <Search />
-              </Stack>
+              <AddLifeEvent />
             </Grid>
-            <Grid md={12}>
-              <Stack
-                spacing={2}
-                sx={{ px: { xs: 2, md: 4 }, pt: 2, minHeight: 0 }}
-              >
-                <Filters />
-                <Stack spacing={2} sx={{ overflow: "auto" }}>
-                  <BasicTimeline />
-                </Stack>
-              </Stack>
-            </Grid>
-            <Pagination />
-          </Grid>
+            <AppContainer />
+          </Stack>
         </JoyCssVarsProvider>
       </MaterialCssVarsProvider>
     </AlertContextProvider>

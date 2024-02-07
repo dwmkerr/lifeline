@@ -10,23 +10,30 @@ import ListDivider from "@mui/joy/ListDivider";
 
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import GoogleIcon from "@mui/icons-material/Google";
 
 import { LifelineRepository } from "../lib/LifelifeRepository";
-import { AlertType, useAlertContext } from "../components/AlertContext";
 import { LifelineError } from "./Errors";
+import { useAlertContext } from "../components/AlertContext";
 
 function UserInfo({ user }: { user: User | undefined }) {
   //  Work out the user name and info.
-  const repository = new LifelineRepository();
+  const repository = LifelineRepository.getInstance();
   const userName = user?.displayName;
   const userDetail = user ? user.uid : "Not Logged In";
 
   //  Based on the state of the user, we will have options to link/logout.
   const showGoogleSignInButton = !user;
 
-  const { setAlertInfo } = useAlertContext();
+  const { setAlertFromError } = useAlertContext();
+
+  const signIn = async () => {
+    try {
+      await repository.signInWithGoogle();
+    } catch (err) {
+      setAlertFromError(LifelineError.fromError("Sign In Error", err));
+    }
+  };
 
   return (
     <div>
@@ -62,7 +69,7 @@ function UserInfo({ user }: { user: User | undefined }) {
       </MenuItem>
       <ListDivider />
       {showGoogleSignInButton && (
-        <MenuItem onClick={async () => await repository.signInWithGoogle()}>
+        <MenuItem onClick={signIn}>
           <GoogleIcon />
           Sign In with Google
         </MenuItem>
@@ -76,7 +83,7 @@ interface UserMenuDropdownProps {
 }
 
 export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
-  const repository = new LifelineRepository();
+  const repository = LifelineRepository.getInstance();
 
   return (
     <Dropdown>
