@@ -54,6 +54,7 @@ Could be text based:
 
 Quick and dirty task list:
 
-- [ ] refactor: initial page structure with joyui
-- [ ] feat: setup firebase login
-- [ ] feat: setup firebase collection and repository
+- [x] refactor: initial page structure with joyui
+- [x] feat: setup firebase login
+- [x] feat: setup firebase collection and repository
+- [ ] feat: csv import export

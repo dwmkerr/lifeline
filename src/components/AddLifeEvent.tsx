@@ -66,7 +66,7 @@ export default function AddLifeEvent() {
             onChange={(e) => setDate(e.target.value)}
           />
         </FormControl>*/}
-        <FormControl sx={{ flex: 1 }}>
+        <FormControl sx={{ flex: 1, maxWidth: 80 }}>
           <Input
             placeholder="1995"
             aria-label="Year"
@@ -74,7 +74,7 @@ export default function AddLifeEvent() {
             onChange={(e) => setYear(Number.parseInt(e.target.value))}
           />
         </FormControl>
-        <FormControl sx={{ flex: 1 }}>
+        <FormControl sx={{ flex: 1, maxWidth: 80 }}>
           <Input
             placeholder="03"
             aria-label="Month"
@@ -82,7 +82,7 @@ export default function AddLifeEvent() {
             onChange={(e) => setMonth(Number.parseInt(e.target.value))}
           />
         </FormControl>
-        <FormControl sx={{ flex: 1 }}>
+        <FormControl sx={{ flex: 1, maxWidth: 80 }}>
           <Input
             placeholder="14"
             aria-label="Day"
