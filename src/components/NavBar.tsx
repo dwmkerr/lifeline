@@ -3,7 +3,7 @@ import { Box, IconButton } from "@mui/joy";
 import Typography from "@mui/joy/Typography";
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 
-import UserMenuDropdown from "../lib/UserMenuDropdown";
+import UserMenuDropdown from "./UserMenuDropdown";
 import { LifelineRepository } from "../lib/LifelifeRepository";
 import { User, onAuthStateChanged } from "firebase/auth";
 

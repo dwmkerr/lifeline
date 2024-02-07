@@ -1,3 +1,4 @@
+import { RefObject, useCallback, useRef, useState } from "react";
 import { User } from "firebase/auth";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
@@ -8,17 +9,16 @@ import MenuButton from "@mui/joy/MenuButton";
 import MenuItem from "@mui/joy/MenuItem";
 import ListDivider from "@mui/joy/ListDivider";
 
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import UploadIcon from "@mui/icons-material/Upload";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import GoogleIcon from "@mui/icons-material/Google";
 
 import { LifelineRepository } from "../lib/LifelifeRepository";
-import { LifelineError } from "./Errors";
-import { useAlertContext } from "../components/AlertContext";
-import FileUploadButton from "../components/FileUploadButton";
-import { RefObject, useCallback, useRef, useState } from "react";
-import { importCsv } from "./LifelineCsv";
+import { LifelineError } from "../lib/Errors";
+import { useAlertContext } from "./AlertContext";
+import FileUploadButton from "./FileUploadButton";
+import { importCsv } from "../lib/LifelineCsv";
 
 function UserInfo({ user }: { user: User | undefined }) {
   //  Work out the user name and info.
@@ -88,7 +88,6 @@ interface UserMenuDropdownProps {
 
 export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
   const repository = LifelineRepository.getInstance();
-  //
   //  We have to jump through some hoops to stop the internal file upload button
   //  from closing the menu when the 'input' element is selected to load the
   //  file.
@@ -120,7 +119,6 @@ export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
     //  Close the menu, as we have prevented it from closing while the file
     //  upload is in operation.
     setOpen(false);
-
     const events = await importCsv(fileContents);
     await repository.restore(events);
   };
@@ -161,6 +159,7 @@ export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
           <LogoutRoundedIcon />
           Log out
         </MenuItem>
+
         <FileUploadButton
           startDecorator={<UploadIcon />}
           color="neutral"

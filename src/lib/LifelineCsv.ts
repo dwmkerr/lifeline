@@ -1,4 +1,7 @@
-import { parse } from "csv-parse";
+import { Buffer } from "buffer";
+(window as any)["global"] = window;
+global.Buffer = global.Buffer || Buffer;
+import { parse } from "csv-parse/sync";
 import { LifeEvent } from "./LifeEvent";
 import { LifelineError } from "./Errors";
 
@@ -19,12 +22,10 @@ export async function importCsv(csv: string): Promise<ImportedLifeEvent[]> {
     }
     return val;
   };
-  const parser = parse(csv, {
+  const records = parse(csv, {
     columns: true,
-  });
-  const records: ImportedLifeEvent[] = [];
-  let line = 0;
-  for await (const record of parser) {
+  }) as Record<string, string>[];
+  const events = records.map((record, line) => {
     // Work with each record
     console.log(record);
     const year = Number.parseInt(requireString(record, "Year", line));
@@ -34,7 +35,7 @@ export async function importCsv(csv: string): Promise<ImportedLifeEvent[]> {
     const title = record?.Title;
     const notes = record?.Notes;
 
-    records.push({
+    return {
       date: new Date(),
       year,
       month: month ? Number.parseInt(month) : null,
@@ -42,8 +43,7 @@ export async function importCsv(csv: string): Promise<ImportedLifeEvent[]> {
       category,
       title,
       notes,
-    });
-    line = line + 1;
-  }
-  return records;
+    };
+  });
+  return events;
 }

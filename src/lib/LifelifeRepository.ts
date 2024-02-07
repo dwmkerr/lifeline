@@ -150,23 +150,29 @@ export class LifelineRepository {
     await updateDoc(docRef, fields);
   }
 
-  async restore(backupJson: string, userId: string): Promise<void> {
-    const records = JSON.parse(backupJson) as SerializableLifeEvent[];
-    const lifeEvents = records.map(fromSerializableObject);
-
-    //  Now write the records to firebase. Some might have an id, some might
-    //  not.
-    const promises = lifeEvents.map(async (lifeEvent) => {
-      if (!lifeEvent.id) {
-        const newDocumentReference = doc(this.lifeEventsCollection);
-        lifeEvent.id = newDocumentReference.id;
-      }
+  async restore(
+    restorableLifeEvents: Omit<LifeEvent, "id" | "userId">[],
+  ): Promise<void> {
+    //  If we don't have a user, we are going to have to fail.
+    const uid = this.getUser()?.uid;
+    if (!uid) {
+      throw new LifelineError(
+        "Restore Error",
+        "Cannot restore events as the user is not logged in.",
+      );
+    }
+    const promises = restorableLifeEvents.map(async (lifeEvent) => {
+      const newDocumentReference = doc(this.lifeEventsCollection);
 
       //  Load the puzzles into the database, but always set the user id.
-      return await setDoc(doc(this.lifeEventsCollection, lifeEvent.id), {
-        ...lifeEvent,
-        userId,
-      });
+      return await setDoc(
+        doc(this.lifeEventsCollection, newDocumentReference.id),
+        {
+          ...lifeEvent,
+          userId: uid,
+          id: newDocumentReference.id,
+        },
+      );
     });
     await Promise.all(promises);
   }
