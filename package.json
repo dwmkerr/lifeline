@@ -17,6 +17,7 @@
     "@types/node": "^16.18.79",
     "@types/react": "^18.2.52",
     "@types/react-dom": "^18.2.18",
+    "csv-parse": "^5.5.3",
     "eslint-plugin-html": "^7.1.0",
     "firebase": "^10.8.0",
     "jest-environment-jsdom": "^29.7.0",
@@ -34,7 +35,6 @@
     "eject": "react-scripts eject",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch --no-coverage",
     "test:debug": "NODE_OPTIONS=--experimental-vm-modules node --inspect-brk ./node_modules/.bin/jest --runInBand --watch",
     "tsc": "tsc"
