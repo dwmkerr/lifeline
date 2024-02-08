@@ -1,4 +1,3 @@
-import jest from "jest";
 import "@testing-library/jest-dom";
 Object.defineProperty(window, "matchMedia", {
   writable: true,
@@ -6,10 +5,10 @@ Object.defineProperty(window, "matchMedia", {
     matches: false,
     media: query,
     onchange: null,
-    addListener: () => {},
-    removeListener: () => {},
-    addEventListener: () => {},
-    removeEventListener: () => {},
-    dispatchEvent: () => {},
+    addListener: () => undefined,
+    removeListener: () => undefined,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+    dispatchEvent: () => undefined,
   }),
 });

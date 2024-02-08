@@ -1,4 +1,4 @@
-import { parse } from "csv-parse/browser/esm/sync";
+import { parse } from "csv-parse/sync";
 import { LifeEvent } from "./LifeEvent";
 
 type ImportedLifeEvent = Omit<LifeEvent, "id" | "userId">;
@@ -36,8 +36,6 @@ export async function importCsv(csv: string): Promise<ImportResults> {
     columns: true,
   }) as Record<string, string>[];
   const results = records.map((record, line): ImportedLifeEvent | undefined => {
-    // Work with each record
-    console.log(record);
     const yearStr = requireString(record, "Year", line);
     if (yearStr === undefined) {
       return undefined;
