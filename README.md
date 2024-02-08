@@ -58,6 +58,8 @@ Quick and dirty task list:
 - [x] feat: setup firebase login
 - [x] feat: setup firebase collection and repository
 - [x] feat: csv import
+- [ ] refactor: cleanup import button and fix styles
+- [ ] bug: if cancel during import the menu stays open
 
 - [ ] feat: csv export
 - [ ] feat: show warning messages on import

@@ -1,6 +1,3 @@
-import { Buffer } from "buffer";
-window.Buffer = window.Buffer || Buffer;
-
 import {
   experimental_extendTheme as materialExtendTheme,
   Experimental_CssVarsProvider as MaterialCssVarsProvider,

@@ -1,6 +1,5 @@
 import { parse } from "csv-parse/browser/esm/sync";
 import { LifeEvent } from "./LifeEvent";
-import { LifelineError } from "./Errors";
 
 type ImportedLifeEvent = Omit<LifeEvent, "id" | "userId">;
 
