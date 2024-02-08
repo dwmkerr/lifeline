@@ -16,7 +16,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 
 import { LifelineRepository } from "../lib/LifelifeRepository";
 import { LifelineError } from "../lib/Errors";
-import { useAlertContext } from "./AlertContext";
+import { AlertType, useAlertContext } from "./AlertContext";
 import FileUploadButton from "./FileUploadButton";
 import { importCsv } from "../lib/LifelineCsv";
 
@@ -92,6 +92,7 @@ export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
   //  from closing the menu when the 'input' element is selected to load the
   //  file.
   const fileUploadInputRef: RefObject<HTMLInputElement> = useRef(null);
+  const { setAlertInfo } = useAlertContext();
 
   //  We must handle the menu open state ourselves - preventing close if the
   //  close event propagated from the upload input element.
@@ -119,8 +120,24 @@ export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
     //  Close the menu, as we have prevented it from closing while the file
     //  upload is in operation.
     setOpen(false);
-    const events = await importCsv(fileContents);
-    await repository.restore(events);
+    const results = await importCsv(fileContents);
+    const { lifeEvents, warnings } = results;
+    console.log("Events", lifeEvents.length);
+    console.log("Warnings", warnings);
+    if (warnings.length > 0) {
+      setAlertInfo({
+        title: `Imported with ${warnings.length} warning(s)`,
+        message: `Imported ${lifeEvents.length} events with ${warnings.length} warning(s)`,
+        type: AlertType.Warning,
+      });
+    } else {
+      setAlertInfo({
+        title: `Imported ${lifeEvents.length} Events`,
+        message: `Imported ${lifeEvents.length} with 0 warnings`,
+        type: AlertType.Success,
+      });
+    }
+    await repository.restore(lifeEvents);
   };
 
   return (

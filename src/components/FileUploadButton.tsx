@@ -71,7 +71,7 @@ export default function FileUploadButton({
         ref={props.inputElementRef}
         type="file"
         onChange={handleFileChange}
-        accept=".json"
+        accept=".csv"
         onClick={() => setLoading(true)}
       />
     </Button>

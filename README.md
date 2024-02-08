@@ -57,4 +57,7 @@ Quick and dirty task list:
 - [x] refactor: initial page structure with joyui
 - [x] feat: setup firebase login
 - [x] feat: setup firebase collection and repository
-- [ ] feat: csv import export
+- [x] feat: csv import
+
+- [ ] feat: csv export
+- [ ] feat: show warning messages on import

@@ -1,13 +1,22 @@
-import { Buffer } from "buffer";
-(window as any)["global"] = window;
-global.Buffer = global.Buffer || Buffer;
-import { parse } from "csv-parse/sync";
+import { parse } from "csv-parse/browser/esm/sync";
 import { LifeEvent } from "./LifeEvent";
 import { LifelineError } from "./Errors";
 
 type ImportedLifeEvent = Omit<LifeEvent, "id" | "userId">;
 
-export async function importCsv(csv: string): Promise<ImportedLifeEvent[]> {
+type ImportWarning = {
+  title: string;
+  message: string;
+  line?: number;
+};
+
+type ImportResults = {
+  lifeEvents: ImportedLifeEvent[];
+  warnings: ImportWarning[];
+};
+
+export async function importCsv(csv: string): Promise<ImportResults> {
+  const warnings: ImportWarning[] = [];
   const requireString = (
     record: Record<string, string>,
     colName: string,
@@ -15,20 +24,26 @@ export async function importCsv(csv: string): Promise<ImportedLifeEvent[]> {
   ) => {
     const val = record[colName];
     if (val === undefined) {
-      throw new LifelineError(
-        "CSV Error",
-        `Missing field ${colName} on line ${line}`,
-      );
+      warnings.push({
+        title: "CSV Error",
+        message: `Missing field ${colName} on line ${line}`,
+        line,
+      });
+      return undefined;
     }
     return val;
   };
   const records = parse(csv, {
     columns: true,
   }) as Record<string, string>[];
-  const events = records.map((record, line) => {
+  const results = records.map((record, line): ImportedLifeEvent | undefined => {
     // Work with each record
     console.log(record);
-    const year = Number.parseInt(requireString(record, "Year", line));
+    const yearStr = requireString(record, "Year", line);
+    if (yearStr === undefined) {
+      return undefined;
+    }
+    const year = Number.parseInt(yearStr);
     const month = record?.Month;
     const day = record?.Day;
     const category = record?.Category;
@@ -45,5 +60,12 @@ export async function importCsv(csv: string): Promise<ImportedLifeEvent[]> {
       notes,
     };
   });
-  return events;
+
+  const lifeEvents = results.filter(
+    (record): record is ImportedLifeEvent => !!record,
+  );
+  return {
+    lifeEvents,
+    warnings,
+  };
 }
