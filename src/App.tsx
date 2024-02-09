@@ -7,6 +7,7 @@ import { CssVarsProvider as JoyCssVarsProvider } from "@mui/joy/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/joy/Grid";
 import Stack from "@mui/joy/Stack";
+import { OrderByDirection } from "firebase/firestore";
 
 import {
   AlertContextProvider,
@@ -27,20 +28,25 @@ const materialTheme = materialExtendTheme();
 const AppContainer = () => {
   const repository = LifelineRepository.getInstance();
   const { alertInfo, setAlertInfo } = useAlertContext();
-
   const [lifeEvents, setLifeEvents] = useState<LifeEvent[]>([]);
+  const [sortDirection, setSortDirection] = useState<OrderByDirection>("asc");
 
   useEffect(() => {
     const unsubscribe = repository.subscribeToLifeEvents((lifeEvents) => {
       setLifeEvents(lifeEvents);
-    });
+    }, sortDirection);
     return unsubscribe;
-  }, []);
+  }, [sortDirection]);
 
   return (
     <Stack direction="column" alignItems="center" flexGrow={1}>
       <Stack spacing={2} sx={{ px: { xs: 2, md: 4 }, pt: 2, minHeight: 0 }}>
-        <Filters />
+        <Filters
+          sortDirection={sortDirection}
+          onSetSortDirection={(sortDirection) =>
+            setSortDirection(sortDirection)
+          }
+        />
       </Stack>
       <Stack spacing={2} sx={{ overflow: "auto", flexGrow: 1 }}>
         <BasicTimeline lifeEvents={lifeEvents} />
