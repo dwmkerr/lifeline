@@ -18,6 +18,8 @@ import {
   deleteDoc,
   query,
   updateDoc,
+  orderBy,
+  OrderByDirection,
 } from "firebase/firestore";
 import {
   LifeEvent,
@@ -90,8 +92,13 @@ export class LifelineRepository {
 
   subscribeToLifeEvents(
     onLifeEvents: (lifeEvents: LifeEvent[]) => void,
+    orderDirection: OrderByDirection,
   ): Unsubscribe {
-    const q = query(this.lifeEventsCollection);
+    const q = query(
+      this.lifeEventsCollection,
+      orderBy("year", orderDirection),
+      orderBy("month", orderDirection),
+    );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const lifeEvents = querySnapshot.docs.map((doc) => doc.data());
       onLifeEvents(lifeEvents);

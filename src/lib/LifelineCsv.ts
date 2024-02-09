@@ -14,8 +14,14 @@ type ImportResults = {
   warnings: ImportWarning[];
 };
 
+function isEmptyRecord(record: Record<string, string>): boolean {
+  const anyValue = Object.keys(record).find((key) => !!record[key]);
+  return anyValue === undefined;
+}
+
 export async function importCsv(csv: string): Promise<ImportResults> {
   const warnings: ImportWarning[] = [];
+  const emptyLineNumbers: number[] = [];
   const requireString = (
     record: Record<string, string>,
     colName: string,
@@ -25,7 +31,7 @@ export async function importCsv(csv: string): Promise<ImportResults> {
     if (val === undefined) {
       warnings.push({
         title: "CSV Error",
-        message: `Missing field ${colName} on line ${line}`,
+        message: `Missing field ${colName} on line ${line + 1}`,
         line,
       });
       return undefined;
@@ -36,6 +42,14 @@ export async function importCsv(csv: string): Promise<ImportResults> {
     columns: true,
   }) as Record<string, string>[];
   const results = records.map((record, line): ImportedLifeEvent | undefined => {
+    //  Skip completely empty lines that are commonly exported at the end of the
+    //  rows in excel.
+    if (isEmptyRecord(record)) {
+      emptyLineNumbers.push(line + 1);
+      return undefined;
+    }
+
+    //  If we are missing the year, skip and warn.
     const yearStr = requireString(record, "Year", line);
     if (yearStr === undefined) {
       return undefined;
@@ -58,9 +72,18 @@ export async function importCsv(csv: string): Promise<ImportResults> {
     };
   });
 
+  //  Filter out the undefined rows which we couldn't parse.
   const lifeEvents = results.filter(
     (record): record is ImportedLifeEvent => !!record,
   );
+
+  //  If there were skipped lines, warn.
+  if (emptyLineNumbers.length > 0) {
+    warnings.push({
+      title: "Skipped Empty Lines",
+      message: `Skipped empty line(s): ${emptyLineNumbers.join(", ")}`,
+    });
+  }
   return {
     lifeEvents,
     warnings,
