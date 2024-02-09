@@ -22,39 +22,20 @@ jobs:
       - name: Fix up git URLs
         run: echo -e '[url "https://github.com/"]\n  insteadOf = "git://github.com/"' >> ~/.gitconfig
 
-      # Install dependencies.
       - name: Install Dependencies
         run: npm install
 
-      # Ensure that we can build the extension.
       - name: Build
-        run: make build
+        run: npm run tsc
 
-      # Run all tests.
       - name: Test
-        run: make test
+        run: npm run test
 
       # Upload coverage.
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
-
-      # Create and verify the release.
-      - name: Create and Verify Release
-        run: |
-          make release
-          if [ -f ./release/chatgpt-diagrams-extension.zip ]; then
-            echo "release exists..."
-          else
-            echo "cannot find release..."
-            exit 1
-          fi
-
-      # Upload extension artifact.
-      - name: Upload Extension Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: chatgpt-diagrams-browser-extension
-          path: ./release/chatgpt-diagrams-extension.zip
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       # Run Release Please to create release pull requests if we have merged to
       # the main branch.
@@ -64,10 +45,3 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
           package-name: chatgpt-diagrams-extension
-
-      # If we have created a release, attach the artifacts to it.
-      - name: Upload Release Artifact
-        if: ${{ steps.release.outputs.release_created }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ steps.release.outputs.tag_name }} ./release/puzlog.zip
