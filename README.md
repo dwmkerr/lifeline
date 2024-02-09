@@ -1,13 +1,15 @@
 # lifeline
 
+[![codecov](https://codecov.io/gh/dwmkerr/lifeline/graph/badge.svg?token=lI5Swxa2tj)](https://codecov.io/gh/dwmkerr/lifeline)
+
 Visualise and track key life events with an interactive timeline
 
 ## Developer Guide
 
 | Command | Description |
 | ------- | ----------- |
-| npm run lint | Lint the code with eslint/prettier |
-| npm run lint:fix | Fix the code with eslint/prettier |
+| `npm run lint` | Lint the code with eslint/prettier |
+| `npm run lint:fix` | Fix the code with eslint/prettier |
 
 ### Firebase
 
@@ -15,7 +17,7 @@ Use the [Firebase Local Emulator Suite](https://firebase.google.com/docs/emulato
 
 Setup looks like this:
 
-````bash
+```bash
 
 # Install firebase CLI tools, then login.
 curl -sL firebase.tools | bash
@@ -33,6 +35,13 @@ firebase emulators:start
 open http://localhost:4000
 ```
 
+## Releasing
+
+This project uses [Release Please](https://github.com/googleapis/release-please) to manage releases. As long as you use [Conventional Commit messages](https://www.conventionalcommits.org/en/v1.0.0/), release please will open up a 'release' pull request on the `main` branch when changes are merged. Merging the release pull request will trigger a full release to NPM.
+
+```bash
+VERSION="0.1.0" git commit --allow-empty -m "chore: release ${VERSION}" -m "Release-As: ${VERSION}"
+```
 
 ## Goals
 
@@ -61,6 +70,9 @@ Quick and dirty task list:
 - [ ] feat: sort events, sort option in UI for direction
 - [ ] refactor: cleanup import button and fix styles
 - [ ] bug: if cancel during import the menu stays open
+- [ ] build: coverage badge
+- [ ] feat: release please and badge
+
 
 - [ ] feat: csv export
 - [ ] feat: show warning messages on import
