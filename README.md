@@ -69,7 +69,7 @@ Quick and dirty task list:
 - [x] feat: csv import
 - [x] feat: sort events, sort option in UI for direction
 - [x] feat: filter by category
-- [ ] feat: color category codes
+- [x] feat: color category codes
 - [x] build: coverage badge
 - [x] feat: release please and badge
 

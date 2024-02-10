@@ -73,6 +73,7 @@ const AppContainer = () => {
             setSortDirection(sortDirection)
           }
           categories={categories}
+          categoryColors={categoryColors}
           selectedCategories={selectedCategories}
           onSelectedCategoriesChanged={(sc) => setSelectedCategories(sc)}
         />

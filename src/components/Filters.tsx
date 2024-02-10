@@ -15,6 +15,10 @@ import Slider, { sliderClasses } from "@mui/joy/Slider";
 import FilterAltOutlined from "@mui/icons-material/FilterAltOutlined";
 import CountrySelector from "./CountrySelector";
 import OrderSelector, { OrderSelectorProps } from "./OrderSelector";
+import TimelineDot from "@mui/lab/TimelineDot";
+import { ListItemDecorator } from "@mui/joy";
+
+import CircleIcon from "@mui/icons-material/Circle";
 
 function valueText(value: number) {
   return `$${value.toLocaleString("en-US")}`;
@@ -22,6 +26,7 @@ function valueText(value: number) {
 
 export type FiltersProps = OrderSelectorProps & {
   categories: string[];
+  categoryColors: Record<string, string>;
   selectedCategories: string[];
   onSelectedCategoriesChanged: (selectedCategories: string[]) => void;
 };
@@ -111,30 +116,58 @@ export default function Filters(props: FiltersProps) {
               "--ListItem-radius": "20px",
             }}
           >
-            {props.categories.map((category) => (
-              <ListItem key={category}>
-                <Checkbox
-                  overlay
-                  disableIcon
-                  variant="soft"
-                  label={category}
-                  checked={
-                    props.selectedCategories.find((c) => c === category) !==
-                    undefined
-                  }
-                  onChange={(event) => {
-                    const newSet = event.target.checked
-                      ? new Set([...props.selectedCategories, category])
-                      : new Set(
-                          props.selectedCategories.filter(
-                            (sc) => sc !== category,
-                          ),
-                        );
-                    props.onSelectedCategoriesChanged([...newSet]);
-                  }}
-                />
-              </ListItem>
-            ))}
+            {props.categories.map((category) => {
+              const selected =
+                props.selectedCategories.find((c) => c === category) !==
+                undefined;
+              const color = selected
+                ? category
+                  ? props.categoryColors[category]
+                  : "#cecece"
+                : "#cecece";
+              return (
+                <ListItem key={category}>
+                  <ListItemDecorator>
+                    <CircleIcon
+                      fontSize="small"
+                      sx={{
+                        zIndex: 2,
+                        pointerEvents: "none",
+                        color: color,
+                      }}
+                    />
+                  </ListItemDecorator>
+                  <Checkbox
+                    size="sm"
+                    overlay
+                    disableIcon
+                    variant="soft"
+                    label={category}
+                    checked={selected}
+                    onChange={(event) => {
+                      const newSet = event.target.checked
+                        ? new Set([...props.selectedCategories, category])
+                        : new Set(
+                            props.selectedCategories.filter(
+                              (sc) => sc !== category,
+                            ),
+                          );
+                      props.onSelectedCategoriesChanged([...newSet]);
+                    }}
+                    slotProps={{
+                      action: ({ checked }) => ({
+                        sx: checked
+                          ? {
+                              border: "1px solid",
+                              borderColor: "primary.500",
+                            }
+                          : {},
+                      }),
+                    }}
+                  />
+                </ListItem>
+              );
+            })}
           </List>
         </Stack>
       </Drawer>
