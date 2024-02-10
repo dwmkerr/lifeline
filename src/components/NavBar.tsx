@@ -29,7 +29,7 @@ export default function HeaderSection() {
         top: 0,
         px: 1.5,
         py: 1,
-        zIndex: 10000,
+        zIndex: 1000,
         backgroundColor: "background.body",
         borderBottom: "1px solid",
         borderColor: "divider",

@@ -15,8 +15,7 @@ import Slider, { sliderClasses } from "@mui/joy/Slider";
 import FilterAltOutlined from "@mui/icons-material/FilterAltOutlined";
 import CountrySelector from "./CountrySelector";
 import OrderSelector, { OrderSelectorProps } from "./OrderSelector";
-import TimelineDot from "@mui/lab/TimelineDot";
-import { ListItemDecorator } from "@mui/joy";
+import { ListItemDecorator, Typography } from "@mui/joy";
 
 import CircleIcon from "@mui/icons-material/Circle";
 
@@ -40,7 +39,7 @@ export default function Filters(props: FiltersProps) {
       spacing={{ xs: 0, sm: 2 }}
       justifyContent={{ xs: "space-between" }}
       flexWrap="wrap"
-      sx={{ minWidth: 0 }}
+      sx={{ minWidth: 0, zIndex: 10000 }}
     >
       <Button
         variant="outlined"
@@ -52,9 +51,32 @@ export default function Filters(props: FiltersProps) {
       </Button>
       <OrderSelector {...props} />
       <Drawer open={open} onClose={() => setOpen(false)} hideBackdrop={true}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            position: "absolute",
+            top: 0,
+            right: 0,
+            gap: 0.5,
+            ml: "auto",
+            mr: 1.5,
+            mt: 1.5,
+          }}
+        >
+          <Typography
+            component="label"
+            htmlFor="close-icon"
+            fontSize="sm"
+            fontWeight="lg"
+            sx={{ cursor: "pointer" }}
+          >
+            Close
+          </Typography>
+          <ModalClose id="close-icon" sx={{ position: "initial" }} />
+        </Box>
         <Stack useFlexGap spacing={3} sx={{ p: 2 }}>
           <DialogTitle>Filters</DialogTitle>
-          <ModalClose />
           <CountrySelector />
           <Box
             sx={{
