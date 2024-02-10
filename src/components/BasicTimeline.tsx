@@ -10,6 +10,7 @@ import { Typography } from "@mui/joy";
 
 interface BasicTimelineProps {
   lifeEvents: LifeEvent[];
+  categoryColors: Record<string, string>;
 }
 
 export default function BasicTimeline(props: BasicTimelineProps) {
@@ -25,7 +26,13 @@ export default function BasicTimeline(props: BasicTimelineProps) {
             <Typography level="body-xs">{event.category}</Typography>
           </TimelineOppositeContent>
           <TimelineSeparator>
-            <TimelineDot />
+            <TimelineDot
+              sx={{
+                backgroundColor: event.category
+                  ? props.categoryColors[event.category]
+                  : "#333333",
+              }}
+            />
             <TimelineConnector />
           </TimelineSeparator>
           <TimelineContent>
