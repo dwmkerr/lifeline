@@ -68,13 +68,15 @@ Quick and dirty task list:
 - [x] feat: setup firebase collection and repository
 - [x] feat: csv import
 - [x] feat: sort events, sort option in UI for direction
-- [ ] feat: filter by category
-- [ ] refactor: cleanup import button and fix styles
-- [ ] bug: if cancel during import the menu stays open
+- [x] feat: filter by category
+- [ ] feat: color category codes
 - [x] build: coverage badge
-- [ ] feat: release please and badge
+- [x] feat: release please and badge
 
+- [ ] feat: dialog for import
 - [ ] feat: csv export
+- [ ] bug: if cancel during import the menu stays open
+- [ ] refactor: cleanup import button and fix styles
 - [ ] feat: show warning messages on import
 - [ ] build: fix up main build
 - [ ] feat: deploy to firebase on build

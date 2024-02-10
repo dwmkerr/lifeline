@@ -46,7 +46,7 @@ export default function Filters(props: FiltersProps) {
         Filters
       </Button>
       <OrderSelector {...props} />
-      <Drawer open={open} onClose={() => setOpen(false)}>
+      <Drawer open={open} onClose={() => setOpen(false)} hideBackdrop={true}>
         <Stack useFlexGap spacing={3} sx={{ p: 2 }}>
           <DialogTitle>Filters</DialogTitle>
           <ModalClose />
