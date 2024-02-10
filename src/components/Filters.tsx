@@ -1,6 +1,9 @@
 import * as React from "react";
 import Box from "@mui/joy/Box";
+import List from "@mui/joy/List";
+import ListItem from "@mui/joy/ListItem";
 import Button from "@mui/joy/Button";
+import Checkbox from "@mui/joy/Checkbox";
 import Drawer from "@mui/joy/Drawer";
 import DialogTitle from "@mui/joy/DialogTitle";
 import FormControl from "@mui/joy/FormControl";
@@ -17,9 +20,13 @@ function valueText(value: number) {
   return `$${value.toLocaleString("en-US")}`;
 }
 
-export type FiltersProps = OrderSelectorProps;
+export type FiltersProps = OrderSelectorProps & {
+  categories: string[];
+  selectedCategories: string[];
+  onSelectedCategoriesChanged: (selectedCategories: string[]) => void;
+};
 
-export default function Filters(props: OrderSelectorProps) {
+export default function Filters(props: FiltersProps) {
   const [open, setOpen] = React.useState(false);
   return (
     <Stack
@@ -39,7 +46,7 @@ export default function Filters(props: OrderSelectorProps) {
         Filters
       </Button>
       <OrderSelector {...props} />
-      <Drawer open={open} onClose={() => setOpen(false)}>
+      <Drawer open={open} onClose={() => setOpen(false)} hideBackdrop={true}>
         <Stack useFlexGap spacing={3} sx={{ p: 2 }}>
           <DialogTitle>Filters</DialogTitle>
           <ModalClose />
@@ -95,6 +102,40 @@ export default function Filters(props: OrderSelectorProps) {
               }}
             />
           </FormControl>
+          <FormLabel>Category</FormLabel>
+          <List
+            orientation="horizontal"
+            wrap
+            sx={{
+              "--List-gap": "8px",
+              "--ListItem-radius": "20px",
+            }}
+          >
+            {props.categories.map((category) => (
+              <ListItem key={category}>
+                <Checkbox
+                  overlay
+                  disableIcon
+                  variant="soft"
+                  label={category}
+                  checked={
+                    props.selectedCategories.find((c) => c === category) !==
+                    undefined
+                  }
+                  onChange={(event) => {
+                    const newSet = event.target.checked
+                      ? new Set([...props.selectedCategories, category])
+                      : new Set(
+                          props.selectedCategories.filter(
+                            (sc) => sc !== category,
+                          ),
+                        );
+                    props.onSelectedCategoriesChanged([...newSet]);
+                  }}
+                />
+              </ListItem>
+            ))}
+          </List>
         </Stack>
       </Drawer>
     </Stack>

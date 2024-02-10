@@ -29,7 +29,10 @@ const AppContainer = () => {
   const repository = LifelineRepository.getInstance();
   const { alertInfo, setAlertInfo } = useAlertContext();
   const [lifeEvents, setLifeEvents] = useState<LifeEvent[]>([]);
+  const [filteredLifeEvents, setFilteredLifeEvents] = useState<LifeEvent[]>([]);
   const [sortDirection, setSortDirection] = useState<OrderByDirection>("asc");
+  const [categories, setCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   useEffect(() => {
     const unsubscribe = repository.subscribeToLifeEvents((lifeEvents) => {
@@ -37,6 +40,24 @@ const AppContainer = () => {
     }, sortDirection);
     return unsubscribe;
   }, [sortDirection]);
+
+  useEffect(() => {
+    const allCategories = lifeEvents.map((le) => le.category);
+    const validCategories = allCategories.filter(
+      (c) => c !== null && c !== "",
+    ) as string[];
+    const categories = [...new Set(validCategories)];
+    setCategories(categories);
+    setSelectedCategories(categories);
+  }, [lifeEvents]);
+
+  useEffect(() => {
+    setFilteredLifeEvents(
+      lifeEvents.filter(
+        (le) => selectedCategories.indexOf(le.category || "") !== -1,
+      ),
+    );
+  }, [selectedCategories]);
 
   return (
     <Stack direction="column" alignItems="center" flexGrow={1}>
@@ -46,10 +67,13 @@ const AppContainer = () => {
           onSetSortDirection={(sortDirection) =>
             setSortDirection(sortDirection)
           }
+          categories={categories}
+          selectedCategories={selectedCategories}
+          onSelectedCategoriesChanged={(sc) => setSelectedCategories(sc)}
         />
       </Stack>
       <Stack spacing={2} sx={{ overflow: "auto", flexGrow: 1 }}>
-        <BasicTimeline lifeEvents={lifeEvents} />
+        <BasicTimeline lifeEvents={filteredLifeEvents} />
       </Stack>
       <Pagination />
       {alertInfo && (
