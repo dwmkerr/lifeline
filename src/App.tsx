@@ -22,6 +22,7 @@ import { AlertSnackbar } from "./components/AlertSnackbar";
 import { LifelineRepository } from "./lib/LifelifeRepository";
 import { useEffect, useState } from "react";
 import { LifeEvent } from "./lib/LifeEvent";
+import { CategoryColor } from "./lib/CategoryColor";
 
 const materialTheme = materialExtendTheme();
 
@@ -32,6 +33,9 @@ const AppContainer = () => {
   const [filteredLifeEvents, setFilteredLifeEvents] = useState<LifeEvent[]>([]);
   const [sortDirection, setSortDirection] = useState<OrderByDirection>("asc");
   const [categories, setCategories] = useState<string[]>([]);
+  const [categoryColors, setCategoryColors] = useState<Record<string, string>>(
+    {},
+  );
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   useEffect(() => {
@@ -47,6 +51,7 @@ const AppContainer = () => {
       (c) => c !== null && c !== "",
     ) as string[];
     const categories = [...new Set(validCategories)];
+    setCategoryColors(CategoryColor.getColors(categories));
     setCategories(categories);
     setSelectedCategories(categories);
   }, [lifeEvents]);
@@ -73,7 +78,10 @@ const AppContainer = () => {
         />
       </Stack>
       <Stack spacing={2} sx={{ overflow: "auto", flexGrow: 1 }}>
-        <BasicTimeline lifeEvents={filteredLifeEvents} />
+        <BasicTimeline
+          lifeEvents={filteredLifeEvents}
+          categoryColors={categoryColors}
+        />
       </Stack>
       <Pagination />
       {alertInfo && (
