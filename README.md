@@ -73,6 +73,8 @@ Quick and dirty task list:
 - [x] build: coverage badge
 - [x] feat: release please and badge
 
+- [ ] feat: edit event
+
 - [x] chore: close dialog button on filters
 - [ ] feat: dialog for import
 - [ ] feat: csv export

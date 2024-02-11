@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   experimental_extendTheme as materialExtendTheme,
   Experimental_CssVarsProvider as MaterialCssVarsProvider,
@@ -18,6 +19,7 @@ import NavBar from "./components/NavBar";
 import AddLifeEvent from "./components/AddLifeEvent";
 import Filters from "./components/Filters";
 import Pagination from "./components/Pagination";
+import EditEventModal from "./components/EditEventModal";
 import { AlertSnackbar } from "./components/AlertSnackbar";
 import { LifelineRepository } from "./lib/LifelifeRepository";
 import { useEffect, useState } from "react";
@@ -37,6 +39,8 @@ const AppContainer = () => {
     {},
   );
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [editEventModalOpen, setEditEventModalOpen] = useState(false);
+  const [editEvent, setEditEvent] = useState<LifeEvent | null>(null);
 
   useEffect(() => {
     const unsubscribe = repository.subscribeToLifeEvents((lifeEvents) => {
@@ -65,37 +69,54 @@ const AppContainer = () => {
   }, [selectedCategories]);
 
   return (
-    <Stack direction="column" alignItems="center" flexGrow={1}>
-      <Stack spacing={2} sx={{ px: { xs: 2, md: 4 }, pt: 2, minHeight: 0 }}>
-        <Filters
-          sortDirection={sortDirection}
-          onSetSortDirection={(sortDirection) =>
-            setSortDirection(sortDirection)
-          }
-          categories={categories}
-          categoryColors={categoryColors}
-          selectedCategories={selectedCategories}
-          onSelectedCategoriesChanged={(sc) => setSelectedCategories(sc)}
-        />
+    <React.Fragment>
+      <Grid md={12}>
+        <AddLifeEvent cateories={categories} />
+      </Grid>
+      <Stack direction="column" alignItems="center" flexGrow={1}>
+        <Stack spacing={2} sx={{ px: { xs: 2, md: 4 }, pt: 2, minHeight: 0 }}>
+          <Filters
+            sortDirection={sortDirection}
+            onSetSortDirection={(sortDirection) =>
+              setSortDirection(sortDirection)
+            }
+            categories={categories}
+            categoryColors={categoryColors}
+            selectedCategories={selectedCategories}
+            onSelectedCategoriesChanged={(sc) => setSelectedCategories(sc)}
+          />
+        </Stack>
+        <Stack spacing={2} sx={{ overflow: "auto", flexGrow: 1 }}>
+          <BasicTimeline
+            lifeEvents={filteredLifeEvents}
+            categoryColors={categoryColors}
+            onEditEvent={(event) => {
+              setEditEvent(event);
+              setEditEventModalOpen(true);
+            }}
+          />
+        </Stack>
+        <Pagination />
+        {alertInfo && (
+          <AlertSnackbar
+            alertInfo={alertInfo}
+            onDismiss={() => setAlertInfo(null)}
+          />
+        )}
+        {editEventModalOpen && editEvent !== null && (
+          <EditEventModal
+            open={editEventModalOpen}
+            event={editEvent}
+            cateories={categories}
+            onClose={() => setEditEventModalOpen(false)}
+          />
+        )}
       </Stack>
-      <Stack spacing={2} sx={{ overflow: "auto", flexGrow: 1 }}>
-        <BasicTimeline
-          lifeEvents={filteredLifeEvents}
-          categoryColors={categoryColors}
-        />
-      </Stack>
-      <Pagination />
-      {alertInfo && (
-        <AlertSnackbar
-          alertInfo={alertInfo}
-          onDismiss={() => setAlertInfo(null)}
-        />
-      )}
-    </Stack>
+    </React.Fragment>
   );
 };
 
-export default function RentalDashboard() {
+export default function App() {
   return (
     <AlertContextProvider>
       <MaterialCssVarsProvider theme={{ [MATERIAL_THEME_ID]: materialTheme }}>
@@ -110,9 +131,6 @@ export default function RentalDashboard() {
               height: "100%",
             }}
           >
-            <Grid md={12}>
-              <AddLifeEvent />
-            </Grid>
             <AppContainer />
           </Stack>
         </JoyCssVarsProvider>

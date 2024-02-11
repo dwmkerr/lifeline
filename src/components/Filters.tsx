@@ -39,7 +39,7 @@ export default function Filters(props: FiltersProps) {
       spacing={{ xs: 0, sm: 2 }}
       justifyContent={{ xs: "space-between" }}
       flexWrap="wrap"
-      sx={{ minWidth: 0, zIndex: 10000 }}
+      sx={{ minWidth: 0 }}
     >
       <Button
         variant="outlined"
