@@ -7,8 +7,13 @@ import { useState } from "react";
 import { LifelineRepository } from "../lib/LifelifeRepository";
 import { useAlertContext } from "./AlertContext";
 import { LifelineError } from "../lib/Errors";
+import { Autocomplete } from "@mui/joy";
 
-export default function AddLifeEvent() {
+interface AddLifeEventProps {
+  cateories: string[];
+}
+
+export default function AddLifeEvent(props: AddLifeEventProps) {
   const repository = LifelineRepository.getInstance();
   const { setAlertFromError } = useAlertContext();
 
@@ -99,11 +104,10 @@ export default function AddLifeEvent() {
           />
         </FormControl>
         <FormControl sx={{ flex: 1 }}>
-          <Input
-            placeholder="Category"
-            aria-label="Category"
+          <Autocomplete
             value={category || ""}
-            onChange={(e) => setCategory(e.target.value)}
+            options={["", ...props.cateories]}
+            onChange={(e, value) => setCategory(value)}
           />
         </FormControl>
         <Button variant="solid" color="primary" onClick={add}>
