@@ -31,7 +31,7 @@ jobs:
 
   # Deploy to Firebase hosting.
   build_and_preview:
-    needs: valiate-pull-request
+    needs: validate-pull-request
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
     steps:
