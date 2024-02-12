@@ -15,7 +15,7 @@ jobs:
       # deploy the website.
       # Note: *every* step here needs to check the 'release_created' flag.
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Fixup Git URLs, see:
       # https://stackoverflow.com/questions/70663523/the-unauthenticated-git-protocol-on-port-9418-is-no-longer-supported
@@ -33,15 +33,34 @@ jobs:
 
       # Upload coverage.
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       # Run Release Please to create release pull requests if we have merged to
       # the main branch.
-      - uses: google-github-actions/release-please-action@v3
+      - uses: google-github-actions/release-please-action@v4
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
-          package-name: chatgpt-diagrams-extension
+
+  release:
+    needs: main
+    if: ${{ steps.release.outputs.release_created }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm ci && npm run build
+
+      # Deploy to Firebase hosting.
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_LIFELINE_DWMKERR }}'
+          channelId: live
+          projectId: lifeline-dwmkerr
+
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
