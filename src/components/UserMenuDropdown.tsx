@@ -9,6 +9,7 @@ import MenuItem from "@mui/joy/MenuItem";
 import ListDivider from "@mui/joy/ListDivider";
 
 import UploadIcon from "@mui/icons-material/Upload";
+import DownloadIcon from "@mui/icons-material/Download";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import GoogleIcon from "@mui/icons-material/Google";
@@ -86,7 +87,7 @@ interface UserMenuDropdownProps {
 
 export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
   const repository = LifelineRepository.getInstance();
-  const { setShowImportDialog } = useDialogContext();
+  const { setShowImportDialog, setShowExportDialog } = useDialogContext();
 
   return (
     <Dropdown>
@@ -120,6 +121,11 @@ export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
           <UploadIcon />
           Import
         </MenuItem>
+        <MenuItem onClick={() => setShowExportDialog(true)}>
+          <DownloadIcon />
+          Export
+        </MenuItem>
+        <ListDivider />
         <MenuItem disabled={true}>
           <SettingsRoundedIcon />
           Settings

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useState } from "react";
 import Button from "@mui/joy/Button";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
@@ -38,15 +38,6 @@ export default function ImportEventsDialog(props: ImportEventsDialogProps) {
   const [notesColumn, setNotesColumn] = useState<string | null>(null);
   const [deleteExistingEvents, setDeleteExistingEvents] = useState(false);
   const [importing, setImporting] = useState(false);
-
-  //  Focus the title on mount.
-  //  Kludgy - can't get 'autoFocus' to work and 'useCallback' didn't work either.
-  const titleRef = useRef<HTMLInputElement | null>(null);
-  useEffect(() => {
-    setTimeout(() => {
-      titleRef?.current?.focus();
-    }, 100);
-  }, []);
 
   const onFileUploadComplete = async (fileContents: string) => {
     setFileContents(fileContents);

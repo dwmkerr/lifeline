@@ -77,11 +77,13 @@ Quick and dirty task list:
 - [x] chore: close dialog button on filters
 - [x] feat: dialog for import
 - [x] feat: delete existing events
-
-- [ ] feat: csv export
-- [ ] bug: if cancel during import the menu stays open
-- [ ] refactor: cleanup import button and fix styles
+- [x] bug: if cancel during import the menu stays open
+- [x] refactor: cleanup import button and fix styles
 - [x] build: fix up main build
+
+- [ ] feat: csv export - check autofocus on import/export
+
+- [ ] favicon (heart?)
 - [ ] feat: deploy to firebase on build
 
 ### Epic Import Preview

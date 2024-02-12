@@ -195,11 +195,10 @@ export class LifelineRepository {
     await Promise.all(promises);
   }
 
-  async backup(): Promise<string> {
+  async backup(): Promise<SerializableLifeEvent[]> {
     const lifeEvents = await this.load();
     const records = lifeEvents.map(toSerializableObject);
-    const backupJson = JSON.stringify(records, null, 2);
-    return backupJson;
+    return records;
   }
 
   getAuth(): Auth {

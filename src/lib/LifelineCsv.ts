@@ -1,4 +1,5 @@
 import { parse } from "csv-parse/sync";
+import { stringify } from "csv-stringify/sync";
 import { LifeEvent } from "./LifeEvent";
 
 type ImportedLifeEvent = Omit<LifeEvent, "id" | "userId">;
@@ -115,4 +116,30 @@ export async function importCsv(
     lifeEvents,
     warnings,
   };
+}
+
+export async function exportCsv(
+  events: Omit<LifeEvent, "id" | "userId" | "date">[],
+  options: ImportCsvOptions,
+): Promise<string> {
+  const columnsRow = [
+    options.columnMappings.title,
+    options.columnMappings.category,
+    options.columnMappings.year,
+    options.columnMappings.month,
+    options.columnMappings.day,
+    options.columnMappings.notes,
+  ];
+  const rows = events.map((event) => [
+    event.title,
+    event.category,
+    event.year,
+    event.month,
+    event.day,
+    event.notes,
+  ]);
+
+  const csv = stringify([columnsRow, ...rows]);
+
+  return csv;
 }
