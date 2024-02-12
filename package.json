@@ -1,5 +1,5 @@
 {
-  "name": "lifeline",
+  "name": "@dwmkerr/lifeline",
   "version": "0.1.0",
   "private": true,
   "scripts": {
