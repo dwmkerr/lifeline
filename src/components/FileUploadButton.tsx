@@ -15,7 +15,6 @@ const VisuallyHiddenInput = styled("input")`
 `;
 
 type FileUploadButtonProps = ButtonProps & {
-  inputElementRef: RefObject<HTMLInputElement>;
   onFileUploadComplete: (contents: string) => Promise<void>;
 };
 
@@ -68,7 +67,6 @@ export default function FileUploadButton({
     >
       Upload a file
       <VisuallyHiddenInput
-        ref={props.inputElementRef}
         type="file"
         onChange={handleFileChange}
         accept=".csv"

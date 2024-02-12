@@ -14,6 +14,10 @@ import {
   AlertContextProvider,
   useAlertContext,
 } from "./components/AlertContext";
+import {
+  DialogContextProvider,
+  useDialogContext,
+} from "./components/DialogContext";
 import BasicTimeline from "./components/BasicTimeline";
 import NavBar from "./components/NavBar";
 import AddLifeEvent from "./components/AddLifeEvent";
@@ -25,12 +29,14 @@ import { LifelineRepository } from "./lib/LifelifeRepository";
 import { useEffect, useState } from "react";
 import { LifeEvent } from "./lib/LifeEvent";
 import { CategoryColor } from "./lib/CategoryColor";
+import ImportEventsDialog from "./components/ImportEventsDialog";
 
 const materialTheme = materialExtendTheme();
 
 const AppContainer = () => {
   const repository = LifelineRepository.getInstance();
   const { alertInfo, setAlertInfo } = useAlertContext();
+  const { showImportDialog, setShowImportDialog } = useDialogContext();
   const [lifeEvents, setLifeEvents] = useState<LifeEvent[]>([]);
   const [filteredLifeEvents, setFilteredLifeEvents] = useState<LifeEvent[]>([]);
   const [sortDirection, setSortDirection] = useState<OrderByDirection>("asc");
@@ -109,6 +115,9 @@ const AppContainer = () => {
             onClose={() => setEditEventModalOpen(false)}
           />
         )}
+        {showImportDialog && (
+          <ImportEventsDialog onClose={() => setShowImportDialog(false)} />
+        )}
       </Stack>
     </React.Fragment>
   );
@@ -117,22 +126,24 @@ const AppContainer = () => {
 export default function App() {
   return (
     <AlertContextProvider>
-      <MaterialCssVarsProvider theme={{ [MATERIAL_THEME_ID]: materialTheme }}>
-        <JoyCssVarsProvider>
-          <CssBaseline enableColorScheme />
-          <CssBaseline />
-          <NavBar />
-          <Stack
-            component="main"
-            direction="column"
-            sx={{
-              height: "100%",
-            }}
-          >
-            <AppContainer />
-          </Stack>
-        </JoyCssVarsProvider>
-      </MaterialCssVarsProvider>
+      <DialogContextProvider>
+        <MaterialCssVarsProvider theme={{ [MATERIAL_THEME_ID]: materialTheme }}>
+          <JoyCssVarsProvider>
+            <CssBaseline enableColorScheme />
+            <CssBaseline />
+            <NavBar />
+            <Stack
+              component="main"
+              direction="column"
+              sx={{
+                height: "100%",
+              }}
+            >
+              <AppContainer />
+            </Stack>
+          </JoyCssVarsProvider>
+        </MaterialCssVarsProvider>
+      </DialogContextProvider>
     </AlertContextProvider>
   );
 }

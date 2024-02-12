@@ -1,4 +1,3 @@
-import { RefObject, useCallback, useRef, useState } from "react";
 import { User } from "firebase/auth";
 import Box from "@mui/joy/Box";
 import Typography from "@mui/joy/Typography";
@@ -16,9 +15,8 @@ import GoogleIcon from "@mui/icons-material/Google";
 
 import { LifelineRepository } from "../lib/LifelifeRepository";
 import { LifelineError } from "../lib/Errors";
-import { AlertType, useAlertContext } from "./AlertContext";
-import FileUploadButton from "./FileUploadButton";
-import { importCsv } from "../lib/LifelineCsv";
+import { useDialogContext } from "./DialogContext";
+import { useAlertContext } from "./AlertContext";
 
 function UserInfo({ user }: { user: User | undefined }) {
   //  Work out the user name and info.
@@ -88,60 +86,10 @@ interface UserMenuDropdownProps {
 
 export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
   const repository = LifelineRepository.getInstance();
-  //  We have to jump through some hoops to stop the internal file upload button
-  //  from closing the menu when the 'input' element is selected to load the
-  //  file.
-  const fileUploadInputRef: RefObject<HTMLInputElement> = useRef(null);
-  const { setAlertInfo } = useAlertContext();
-
-  //  We must handle the menu open state ourselves - preventing close if the
-  //  close event propagated from the upload input element.
-  const [open, setOpen] = useState(false);
-  const handleOpenChange = useCallback(
-    (event: React.SyntheticEvent | null, isOpen: boolean) => {
-      //  If a 'close' event is being propagated from the 'input' internally
-      //  used in the upload button, prevent the menu from closing (otherwise
-      //  we will lose the input and abort the upload).
-      const inputEventTarget = event?.target as HTMLInputElement;
-      console.log(`handleFileChange tag event target`, event);
-      if (isOpen === false && inputEventTarget === fileUploadInputRef.current) {
-        console.log(
-          `input is closing menu - preventing close`,
-          inputEventTarget,
-        );
-        return;
-      }
-      setOpen(isOpen);
-    },
-    [],
-  );
-
-  const onFileUploadComplete = async (fileContents: string) => {
-    //  Close the menu, as we have prevented it from closing while the file
-    //  upload is in operation.
-    setOpen(false);
-    const results = await importCsv(fileContents);
-    const { lifeEvents, warnings } = results;
-    console.log("Events", lifeEvents.length);
-    console.log("Warnings", warnings);
-    if (warnings.length > 0) {
-      setAlertInfo({
-        title: `Imported with ${warnings.length} warning(s)`,
-        message: `Imported ${lifeEvents.length} events with ${warnings.length} warning(s)`,
-        type: AlertType.Warning,
-      });
-    } else {
-      setAlertInfo({
-        title: `Imported ${lifeEvents.length} Events`,
-        message: `Imported ${lifeEvents.length} with 0 warnings`,
-        type: AlertType.Success,
-      });
-    }
-    await repository.restore(lifeEvents);
-  };
+  const { setShowImportDialog } = useDialogContext();
 
   return (
-    <Dropdown open={open} onOpenChange={handleOpenChange}>
+    <Dropdown>
       <MenuButton
         variant="plain"
         size="sm"
@@ -168,6 +116,10 @@ export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
       >
         <UserInfo user={user} />
         <ListDivider />
+        <MenuItem onClick={() => setShowImportDialog(true)}>
+          <UploadIcon />
+          Import
+        </MenuItem>
         <MenuItem disabled={true}>
           <SettingsRoundedIcon />
           Settings
@@ -176,15 +128,6 @@ export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
           <LogoutRoundedIcon />
           Log out
         </MenuItem>
-
-        <FileUploadButton
-          startDecorator={<UploadIcon />}
-          color="neutral"
-          variant="plain"
-          size="sm"
-          inputElementRef={fileUploadInputRef}
-          onFileUploadComplete={onFileUploadComplete}
-        />
       </Menu>
     </Dropdown>
   );

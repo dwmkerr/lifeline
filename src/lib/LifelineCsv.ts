@@ -19,7 +19,34 @@ function isEmptyRecord(record: Record<string, string>): boolean {
   return anyValue === undefined;
 }
 
-export async function importCsv(csv: string): Promise<ImportResults> {
+export type CheckCsvResults = {
+  columns: string[];
+  rowCount: number;
+};
+
+export async function checkCsvContents(csv: string): Promise<CheckCsvResults> {
+  const records = parse(csv) as string[][];
+  return {
+    columns: records[0].filter((column) => column !== ""),
+    rowCount: records.length - 1,
+  };
+}
+
+export type ImportCsvOptions = {
+  columnMappings: {
+    title: string;
+    category: string;
+    year: string;
+    month: string;
+    day: string;
+    notes: string;
+  };
+};
+
+export async function importCsv(
+  csv: string,
+  options: ImportCsvOptions,
+): Promise<ImportResults> {
   const warnings: ImportWarning[] = [];
   const emptyLineNumbers: number[] = [];
   const requireString = (
@@ -50,16 +77,16 @@ export async function importCsv(csv: string): Promise<ImportResults> {
     }
 
     //  If we are missing the year, skip and warn.
-    const yearStr = requireString(record, "Year", line);
+    const yearStr = requireString(record, options.columnMappings.year, line);
     if (yearStr === undefined) {
       return undefined;
     }
+    const title = record?.[options.columnMappings.title];
+    const category = record?.[options.columnMappings.category];
     const year = Number.parseInt(yearStr);
-    const month = record?.Month;
-    const day = record?.Day;
-    const category = record?.Category;
-    const title = record?.Title;
-    const notes = record?.Notes;
+    const month = record?.[options.columnMappings.month];
+    const day = record?.[options.columnMappings.day];
+    const notes = record?.[options.columnMappings.notes];
 
     return {
       date: new Date(),
