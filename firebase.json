@@ -1,8 +1,8 @@
 {
   "database": {
     "rules": "database.rules.json"
-  }
-  ,"emulators": {
+  },
+  "emulators": {
     "singleProjectMode": true,
     "auth": {
       "port": 9099
@@ -13,5 +13,19 @@
     "ui": {
       "enabled": true
     }
+  },
+  "hosting": {
+    "public": "build",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   }
 }
