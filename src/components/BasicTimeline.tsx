@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import Timeline from "@mui/lab/Timeline";
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
@@ -9,8 +10,11 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import { IconButton, Stack, Typography } from "@mui/joy";
 
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 import { LifeEvent } from "../lib/LifeEvent";
+import { LifelineRepository } from "../lib/LifelifeRepository";
+import DeleteEventModal from "./DeleteEventModal";
 
 interface BasicTimelineProps {
   lifeEvents: LifeEvent[];
@@ -19,6 +23,11 @@ interface BasicTimelineProps {
 }
 
 export default function BasicTimeline(props: BasicTimelineProps) {
+  const repository = LifelineRepository.getInstance();
+  const [deleteModalEvent, setDeleteModalEvent] = useState<LifeEvent | null>(
+    null,
+  );
+
   return (
     <React.Fragment>
       <Timeline>
@@ -61,6 +70,19 @@ export default function BasicTimeline(props: BasicTimelineProps) {
                     }}
                   />
                 </IconButton>
+                <IconButton
+                  variant="plain"
+                  onClick={() => setDeleteModalEvent(event)}
+                  sx={{
+                    "--IconButton-size": "12px",
+                  }}
+                >
+                  <DeleteForeverIcon
+                    sx={{
+                      maxWidth: "16px",
+                    }}
+                  />
+                </IconButton>
                 <Typography level="title-sm">{event.title}</Typography>
               </Stack>
               <Typography level="body-xs">{event.notes}</Typography>
@@ -68,6 +90,16 @@ export default function BasicTimeline(props: BasicTimelineProps) {
           </TimelineItem>
         ))}
       </Timeline>
+      {deleteModalEvent !== null && (
+        <DeleteEventModal
+          event={deleteModalEvent}
+          onCancel={() => setDeleteModalEvent(null)}
+          onDeleteEvent={(event) => {
+            repository.delete(event.id);
+            setDeleteModalEvent(null);
+          }}
+        />
+      )}
     </React.Fragment>
   );
 }

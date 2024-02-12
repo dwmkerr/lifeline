@@ -72,8 +72,8 @@ Quick and dirty task list:
 - [x] feat: color category codes
 - [x] build: coverage badge
 - [x] feat: release please and badge
-
-- [ ] feat: edit event
+- [x] feat: edit event
+- [x] feat: delete event
 
 - [x] chore: close dialog button on filters
 - [ ] feat: dialog for import

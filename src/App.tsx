@@ -86,16 +86,14 @@ const AppContainer = () => {
             onSelectedCategoriesChanged={(sc) => setSelectedCategories(sc)}
           />
         </Stack>
-        <Stack spacing={2} sx={{ overflow: "auto", flexGrow: 1 }}>
-          <BasicTimeline
-            lifeEvents={filteredLifeEvents}
-            categoryColors={categoryColors}
-            onEditEvent={(event) => {
-              setEditEvent(event);
-              setEditEventModalOpen(true);
-            }}
-          />
-        </Stack>
+        <BasicTimeline
+          lifeEvents={filteredLifeEvents}
+          categoryColors={categoryColors}
+          onEditEvent={(event) => {
+            setEditEvent(event);
+            setEditEventModalOpen(true);
+          }}
+        />
         <Pagination />
         {alertInfo && (
           <AlertSnackbar
