@@ -44,7 +44,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
-          package-name: lifeline
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         if: ${{ steps.release.outputs.release_created }}
