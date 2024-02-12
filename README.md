@@ -80,13 +80,11 @@ Quick and dirty task list:
 - [x] bug: if cancel during import the menu stays open
 - [x] refactor: cleanup import button and fix styles
 - [x] build: fix up main build
-
-- [ ] feat: csv export - check autofocus on import/export
-
-- [ ] favicon (heart?)
+- [x] favicon (heart?)
 - [ ] feat: deploy to firebase on build
 
 ### Epic Import Preview
 
 - [ ] feat: import preview / back to column map
 - [ ] feat: show warning messages on import preview
+- [ ] bug: check autofocus on import/export
