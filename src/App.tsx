@@ -30,13 +30,19 @@ import { useEffect, useState } from "react";
 import { LifeEvent } from "./lib/LifeEvent";
 import { CategoryColor } from "./lib/CategoryColor";
 import ImportEventsDialog from "./components/ImportEventsDialog";
+import ExportEventsDialog from "./components/ExportEventsDialog";
 
 const materialTheme = materialExtendTheme();
 
 const AppContainer = () => {
   const repository = LifelineRepository.getInstance();
   const { alertInfo, setAlertInfo } = useAlertContext();
-  const { showImportDialog, setShowImportDialog } = useDialogContext();
+  const {
+    showImportDialog,
+    setShowImportDialog,
+    showExportDialog,
+    setShowExportDialog,
+  } = useDialogContext();
   const [lifeEvents, setLifeEvents] = useState<LifeEvent[]>([]);
   const [filteredLifeEvents, setFilteredLifeEvents] = useState<LifeEvent[]>([]);
   const [sortDirection, setSortDirection] = useState<OrderByDirection>("asc");
@@ -117,6 +123,9 @@ const AppContainer = () => {
         )}
         {showImportDialog && (
           <ImportEventsDialog onClose={() => setShowImportDialog(false)} />
+        )}
+        {showExportDialog && (
+          <ExportEventsDialog onClose={() => setShowExportDialog(false)} />
         )}
       </Stack>
     </React.Fragment>
