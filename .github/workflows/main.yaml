@@ -45,8 +45,16 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
 
+  release:
+    needs: main
+    if: ${{ steps.release.outputs.release_created }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm ci && npm run build
+
+      # Deploy to Firebase hosting.
       - uses: FirebaseExtended/action-hosting-deploy@v0
-        if: ${{ steps.release.outputs.release_created }}
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_LIFELINE_DWMKERR }}'
@@ -54,6 +62,5 @@ jobs:
           projectId: lifeline-dwmkerr
 
       - run: npm publish
-        if: ${{ steps.release.outputs.release_created }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
