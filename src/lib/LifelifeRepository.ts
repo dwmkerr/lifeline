@@ -159,6 +159,7 @@ export class LifelineRepository {
 
   async restore(
     restorableLifeEvents: Omit<LifeEvent, "id" | "userId">[],
+    deleteExistingEvents: boolean,
   ): Promise<void> {
     //  If we don't have a user, we are going to have to fail.
     const uid = this.getUser()?.uid;
@@ -168,6 +169,16 @@ export class LifelineRepository {
         "Cannot restore events as the user is not logged in.",
       );
     }
+
+    //  If we are deleting events, delete them all.
+    if (deleteExistingEvents) {
+      const querySnapshot = await getDocs(this.lifeEventsCollection);
+      const deletePromises = querySnapshot.docs.map(async (doc) =>
+        deleteDoc(doc.ref),
+      );
+      await Promise.all(deletePromises);
+    }
+
     const promises = restorableLifeEvents.map(async (lifeEvent) => {
       const newDocumentReference = doc(this.lifeEventsCollection);
 

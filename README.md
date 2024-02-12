@@ -74,12 +74,17 @@ Quick and dirty task list:
 - [x] feat: release please and badge
 - [x] feat: edit event
 - [x] feat: delete event
-
 - [x] chore: close dialog button on filters
-- [ ] feat: dialog for import
+- [x] feat: dialog for import
+- [x] feat: delete existing events
+
 - [ ] feat: csv export
 - [ ] bug: if cancel during import the menu stays open
 - [ ] refactor: cleanup import button and fix styles
-- [ ] feat: show warning messages on import
 - [x] build: fix up main build
 - [ ] feat: deploy to firebase on build
+
+### Epic Import Preview
+
+- [ ] feat: import preview / back to column map
+- [ ] feat: show warning messages on import preview
