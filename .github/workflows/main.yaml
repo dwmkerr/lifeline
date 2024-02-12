@@ -44,4 +44,17 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
-          package-name: chatgpt-diagrams-extension
+          package-name: lifeline
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        if: ${{ steps.release.outputs.release_created }}
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_LIFELINE_DWMKERR }}'
+          channelId: live
+          projectId: lifeline-dwmkerr
+
+      - run: npm publish
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
