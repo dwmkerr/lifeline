@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/dwmkerr/lifeline/compare/v2.1.0...v2.2.0) (2024-02-13)
+
+
+### Features
+
+* search bar ([#17](https://github.com/dwmkerr/lifeline/issues/17)) ([7ac8bad](https://github.com/dwmkerr/lifeline/commit/7ac8bad1e370ca52ab8a970c66be38da0cb76aee))
+
 ## [2.1.0](https://github.com/dwmkerr/lifeline/compare/v0.2.0...v2.1.0) (2024-02-13)
 
 
