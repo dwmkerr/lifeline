@@ -81,19 +81,17 @@ Quick and dirty task list:
 - [x] refactor: cleanup import button and fix styles
 - [x] build: fix up main build
 - [x] favicon (heart?)
-
 - [x] add event as modal to save space
 - [x] add event / edit event modal errors
 - [x] add/edit event required fields
 - [x] retire 'add event' from the top bar
-- [ ] feat: deploy to firebase on build
+- [x] feat: deploy to firebase on build
+- [x] search bar
 
 - [ ] feat: major/minor events
 - [ ] feat: show age in timeline, age settings as a modal
 
-- [ ] search bar
 
-- [ ] search bar
 
 ### Epic Import Preview
 

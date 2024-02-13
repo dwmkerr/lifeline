@@ -47,6 +47,7 @@ const AppContainer = () => {
   } = useDialogContext();
   const [lifeEvents, setLifeEvents] = useState<LifeEvent[]>([]);
   const [filteredLifeEvents, setFilteredLifeEvents] = useState<LifeEvent[]>([]);
+  const [searchText, setSearchText] = useState<string>("");
   const [sortDirection, setSortDirection] = useState<OrderByDirection>("asc");
   const [categories, setCategories] = useState<string[]>([]);
   const [categoryColors, setCategoryColors] = useState<Record<string, string>>(
@@ -74,67 +75,85 @@ const AppContainer = () => {
     setSelectedCategories(categories);
   }, [lifeEvents]);
 
+  //  Filter the events and apply the search.
   useEffect(() => {
-    setFilteredLifeEvents(
-      lifeEvents.filter(
-        (le) => selectedCategories.indexOf(le.category || "") !== -1,
-      ),
-    );
-  }, [selectedCategories]);
+    const matchSearch = (val: string) =>
+      val.toLowerCase().indexOf(searchText.toLowerCase()) !== -1;
+    const filter = (event: LifeEvent): boolean => {
+      const categoryMatch =
+        selectedCategories.indexOf(event.category || "") !== -1;
+      const searchMatch =
+        searchText === "" ||
+        matchSearch(event.title) ||
+        matchSearch(event.notes || "");
+      return categoryMatch && searchMatch;
+    };
+
+    setFilteredLifeEvents(lifeEvents.filter(filter));
+  }, [selectedCategories, searchText]);
 
   return (
     <React.Fragment>
-      <Stack direction="column" alignItems="center" flexGrow={1}>
-        <Stack spacing={2} sx={{ px: { xs: 2, md: 4 }, pt: 2, minHeight: 0 }}>
-          <Filters
-            sortDirection={sortDirection}
-            onSetSortDirection={(sortDirection) =>
-              setSortDirection(sortDirection)
-            }
-            categories={categories}
+      <NavBar searchText={searchText} onSearchTextChanged={setSearchText} />
+      <Stack
+        component="main"
+        direction="column"
+        sx={{
+          height: "100%",
+        }}
+      >
+        <Stack direction="column" alignItems="center" flexGrow={1}>
+          <Stack spacing={2} sx={{ px: { xs: 2, md: 4 }, pt: 2, minHeight: 0 }}>
+            <Filters
+              sortDirection={sortDirection}
+              onSetSortDirection={(sortDirection) =>
+                setSortDirection(sortDirection)
+              }
+              categories={categories}
+              categoryColors={categoryColors}
+              selectedCategories={selectedCategories}
+              onSelectedCategoriesChanged={(sc) => setSelectedCategories(sc)}
+            />
+          </Stack>
+          <BasicTimeline
+            lifeEvents={filteredLifeEvents}
             categoryColors={categoryColors}
-            selectedCategories={selectedCategories}
-            onSelectedCategoriesChanged={(sc) => setSelectedCategories(sc)}
+            onEditEvent={(event) => {
+              setEditEvent(event);
+              setEditEventModalOpen(true);
+            }}
           />
+          <Pagination />
+          {alertInfo && (
+            <AlertSnackbar
+              alertInfo={alertInfo}
+              onDismiss={() => setAlertInfo(null)}
+            />
+          )}
+          {editEventModalOpen && editEvent !== null && (
+            <AddEditEventModal
+              mode={AddEditEventMode.Edit}
+              open={editEventModalOpen}
+              event={editEvent}
+              cateories={categories}
+              onClose={() => setEditEventModalOpen(false)}
+            />
+          )}
+          {showImportDialog && (
+            <ImportEventsDialog onClose={() => setShowImportDialog(false)} />
+          )}
+          {showExportDialog && (
+            <ExportEventsDialog onClose={() => setShowExportDialog(false)} />
+          )}
+          {showAddEventDialog && (
+            <AddEditEventModal
+              mode={AddEditEventMode.Add}
+              open={showAddEventDialog}
+              cateories={categories}
+              onClose={() => setShowAddEventDialog(false)}
+            />
+          )}
         </Stack>
-        <BasicTimeline
-          lifeEvents={filteredLifeEvents}
-          categoryColors={categoryColors}
-          onEditEvent={(event) => {
-            setEditEvent(event);
-            setEditEventModalOpen(true);
-          }}
-        />
-        <Pagination />
-        {alertInfo && (
-          <AlertSnackbar
-            alertInfo={alertInfo}
-            onDismiss={() => setAlertInfo(null)}
-          />
-        )}
-        {editEventModalOpen && editEvent !== null && (
-          <AddEditEventModal
-            mode={AddEditEventMode.Edit}
-            open={editEventModalOpen}
-            event={editEvent}
-            cateories={categories}
-            onClose={() => setEditEventModalOpen(false)}
-          />
-        )}
-        {showImportDialog && (
-          <ImportEventsDialog onClose={() => setShowImportDialog(false)} />
-        )}
-        {showExportDialog && (
-          <ExportEventsDialog onClose={() => setShowExportDialog(false)} />
-        )}
-        {showAddEventDialog && (
-          <AddEditEventModal
-            mode={AddEditEventMode.Add}
-            open={showAddEventDialog}
-            cateories={categories}
-            onClose={() => setShowAddEventDialog(false)}
-          />
-        )}
       </Stack>
     </React.Fragment>
   );
@@ -148,16 +167,7 @@ export default function App() {
           <JoyCssVarsProvider>
             <CssBaseline enableColorScheme />
             <CssBaseline />
-            <NavBar />
-            <Stack
-              component="main"
-              direction="column"
-              sx={{
-                height: "100%",
-              }}
-            >
-              <AppContainer />
-            </Stack>
+            <AppContainer />
           </JoyCssVarsProvider>
         </MaterialCssVarsProvider>
       </DialogContextProvider>
