@@ -87,7 +87,11 @@ export default function ImportEventsDialog(props: ImportEventsDialogProps) {
   };
 
   const columnOptions = (columns: string[]) =>
-    columns.map((c) => <Option value={c}>{c}</Option>);
+    columns.map((c) => (
+      <Option key={c} value={c}>
+        {c}
+      </Option>
+    ));
   const columnSelect = (
     title: string,
     value: string | null,

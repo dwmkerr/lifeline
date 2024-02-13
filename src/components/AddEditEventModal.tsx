@@ -12,23 +12,32 @@ import Stack from "@mui/joy/Stack";
 import { LifeEvent } from "../lib/LifeEvent";
 import { Autocomplete, Textarea } from "@mui/joy";
 import { LifelineRepository } from "../lib/LifelifeRepository";
+import { useAlertContext } from "./AlertContext";
+import { LifelineError } from "../lib/Errors";
 
-interface EditEventModalProps {
+export enum AddEditEventMode {
+  Add,
+  Edit,
+}
+
+interface AddEditEventModalProps {
+  mode: AddEditEventMode;
   open: boolean;
-  event: LifeEvent;
+  event?: LifeEvent;
   cateories: string[];
   onClose: (saved: boolean) => void;
 }
 
-export default function EditEventModal(props: EditEventModalProps) {
+export default function AddEditEventModal(props: AddEditEventModalProps) {
   const repository = LifelineRepository.getInstance();
+  const { setAlertFromError } = useAlertContext();
 
-  const [title, setTitle] = useState(props.event.title);
-  const [category, setCategory] = useState(props.event.category);
-  const [year, setYear] = useState(props.event.year);
-  const [month, setMonth] = useState(props.event.month);
-  const [day, setDay] = useState(props.event.day);
-  const [notes, setNotes] = useState(props.event.notes);
+  const [title, setTitle] = useState(props.event?.title || "");
+  const [category, setCategory] = useState(props.event?.category || "");
+  const [year, setYear] = useState(props.event?.year || null);
+  const [month, setMonth] = useState(props.event?.month || null);
+  const [day, setDay] = useState(props.event?.day || null);
+  const [notes, setNotes] = useState(props.event?.notes || null);
 
   //  Focus the title on mount.
   //  Kludgy - can't get 'autoFocus' to work and 'useCallback' didn't work either.
@@ -39,26 +48,65 @@ export default function EditEventModal(props: EditEventModalProps) {
     }, 100);
   }, []);
 
-  const save = () => {
-    repository.save({
-      ...props.event,
-      title,
-      category,
-      year,
-      month,
-      day,
-      notes,
-    });
+  const submit = () => {
+    if (year === null) {
+      setAlertFromError(
+        new LifelineError(
+          "Save Error",
+          "Cannot save an event if a year is not set",
+        ),
+      );
+      return;
+    }
+    if (props.mode === AddEditEventMode.Add) {
+      try {
+        repository.create({
+          title,
+          category,
+          year,
+          month,
+          day,
+          notes,
+        });
+      } catch (err) {
+        setAlertFromError(LifelineError.fromError("Create Event Error", err));
+      }
+    } else {
+      if (props.event === undefined) {
+        setAlertFromError(
+          new LifelineError(
+            "Save Error",
+            "Cannot save an event if the event has not been provided",
+          ),
+        );
+        return;
+      }
+      try {
+        repository.save({
+          ...props.event,
+          title,
+          category,
+          year,
+          month,
+          day,
+          notes,
+        });
+      } catch (err) {
+        setAlertFromError(LifelineError.fromError("Save Event Error", err));
+      }
+    }
   };
   return (
     <Modal open={props.open} onClose={() => props.onClose(false)}>
       <ModalDialog>
-        <DialogTitle>Edit Event</DialogTitle>
+        <DialogTitle>
+          {props.mode === AddEditEventMode.Add ? "Add Event" : "Edit Event"}
+        </DialogTitle>
         <DialogContent>Fill in the details of the event.</DialogContent>
         <form
           onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
-            save();
+            submit();
             props.onClose(true);
           }}
         >
@@ -68,6 +116,8 @@ export default function EditEventModal(props: EditEventModalProps) {
               slotProps={{ input: { ref: titleRef } }}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              placeholder="Title"
+              required
             />
           </FormControl>
           <Stack spacing={2}>
@@ -77,8 +127,9 @@ export default function EditEventModal(props: EditEventModalProps) {
                 <Input
                   placeholder="1995"
                   aria-label="Year"
-                  value={year}
+                  value={year || ""}
                   onChange={(e) => setYear(Number.parseInt(e.target.value))}
+                  required
                 />
               </FormControl>
               <FormControl sx={{ flex: 1, maxWidth: 80 }}>
@@ -103,7 +154,7 @@ export default function EditEventModal(props: EditEventModalProps) {
               <Autocomplete
                 value={category || ""}
                 options={["", ...props.cateories]}
-                onChange={(e, value) => setCategory(value)}
+                onChange={(e, value) => setCategory(value || "")}
               />
             </FormControl>
             <FormControl>
@@ -115,7 +166,11 @@ export default function EditEventModal(props: EditEventModalProps) {
                 onChange={(e) => setNotes(e.target.value)}
               />
             </FormControl>
-            <Button type="submit">Save</Button>
+            {props.mode === AddEditEventMode.Add ? (
+              <Button type="submit">Add</Button>
+            ) : (
+              <Button type="submit">Save</Button>
+            )}
           </Stack>
         </form>
       </ModalDialog>

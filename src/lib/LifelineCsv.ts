@@ -90,7 +90,6 @@ export async function importCsv(
     const notes = record?.[options.columnMappings.notes];
 
     return {
-      date: new Date(),
       year,
       month: month ? Number.parseInt(month) : null,
       day: day ? Number.parseInt(day) : null,
@@ -119,7 +118,7 @@ export async function importCsv(
 }
 
 export async function exportCsv(
-  events: Omit<LifeEvent, "id" | "userId" | "date">[],
+  events: Omit<LifeEvent, "id" | "userId">[],
   options: ImportCsvOptions,
 ): Promise<string> {
   const columnsRow = [

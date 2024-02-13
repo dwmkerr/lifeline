@@ -1,9 +1,8 @@
 export interface LifeEvent {
   userId: string;
   id: string;
-  category: string | null;
+  category: string;
   title: string;
-  date: Date;
   year: number;
   month: number | null;
   day: number | null;
@@ -13,9 +12,8 @@ export interface LifeEvent {
 export interface SerializableLifeEvent {
   userId: string;
   id: string;
-  category: string | null;
+  category: string;
   title: string;
-  date: string;
   year: number;
   month: number | null;
   day: number | null;
@@ -25,7 +23,6 @@ export interface SerializableLifeEvent {
 export function toSerializableObject(event: LifeEvent): SerializableLifeEvent {
   return {
     ...event,
-    date: event.date.toISOString(),
   };
 }
 
@@ -37,32 +34,18 @@ export function toSerializableObject(event: LifeEvent): SerializableLifeEvent {
 type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>;
 export type MinimumSerializableLifeEvent = AtLeast<
   SerializableLifeEvent,
-  "userId" | "id" | "title" | "date" | "year"
+  "userId" | "id" | "title" | "year"
 >;
 export function fromSerializableObject(
   object: MinimumSerializableLifeEvent,
 ): LifeEvent {
-  function parseDateString<T>(obj: T, fieldName: keyof T): Date {
-    const dateString = obj[fieldName] as string;
-    const parsedDate = new Date(dateString);
-
-    if (isNaN(parsedDate.getTime())) {
-      throw new Error(
-        `date field '${String(fieldName)}' is invalid: ${dateString}`,
-      );
-    }
-
-    return parsedDate;
-  }
-
   //  Note that as well as deserializing, this code is also handling the logic
   //  for fields which might not be stored (for example fields which have been
   //  added to the extension since the puzzle was initially logged). This is
   //  also covered in the unit tests.
   return {
     ...object,
-    category: object.category || null,
-    date: object.date ? parseDateString(object, "date") : new Date(),
+    category: object.category || "",
     month: object.month || null,
     day: object.day || null,
     notes: object.notes || null,

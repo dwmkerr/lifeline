@@ -124,7 +124,7 @@ export class LifelineRepository {
   }
 
   async create(
-    lifeEventWithoutId: Omit<LifeEvent, "id" | "userId">,
+    lifeEventWithoutId: Omit<LifeEvent, "id" | "userId" | "date">,
   ): Promise<LifeEvent> {
     const uid = this.getUser()?.uid;
     if (!uid) {
