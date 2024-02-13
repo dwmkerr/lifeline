@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.1.0](https://github.com/dwmkerr/lifeline/compare/v0.2.0...v2.1.0) (2024-02-13)
+
+
+### Features
+
+* add event dialog ([#14](https://github.com/dwmkerr/lifeline/issues/14)) ([8355fc6](https://github.com/dwmkerr/lifeline/commit/8355fc6a3f98078a56ecfe3482cb4ab404564824))
+
+
+### Bug Fixes
+
+* correct coverage config ([ee9c519](https://github.com/dwmkerr/lifeline/commit/ee9c51926e3ae329a71a39a101e85174d263009b))
+
+
+### Miscellaneous Chores
+
+* release 2.1.0 ([44844b2](https://github.com/dwmkerr/lifeline/commit/44844b206b1421ab4c37e45df20fa101e79ad881))
+
 ## [0.2.0](https://github.com/dwmkerr/lifeline/compare/v0.1.0...v0.2.0) (2024-02-12)
 
 
