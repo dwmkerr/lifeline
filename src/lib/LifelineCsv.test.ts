@@ -129,8 +129,8 @@ describe("LifelineCsv", () => {
 
       const csv = await exportCsv(events, defaultOptions);
       const expectedCsv = `Title,Category,Year,Month,Day,Notes,Minor
-Belfast,Life,1985,1,,false
-Colchester,Life,1987,2,,true
+Belfast,Life,1985,1,,,false
+Colchester,Life,1987,2,,,true
 `;
       expect(csv).toEqual(expectedCsv);
     });
