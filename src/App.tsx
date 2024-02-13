@@ -54,6 +54,7 @@ const AppContainer = () => {
     {},
   );
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [includeMinor, setIncludeMinor] = useState<boolean>(true);
   const [editEventModalOpen, setEditEventModalOpen] = useState(false);
   const [editEvent, setEditEvent] = useState<LifeEvent | null>(null);
 
@@ -86,11 +87,12 @@ const AppContainer = () => {
         searchText === "" ||
         matchSearch(event.title) ||
         matchSearch(event.notes || "");
-      return categoryMatch && searchMatch;
+      const minorMatch = includeMinor || event.minor === false;
+      return categoryMatch && searchMatch && minorMatch;
     };
 
     setFilteredLifeEvents(lifeEvents.filter(filter));
-  }, [selectedCategories, searchText]);
+  }, [selectedCategories, searchText, includeMinor]);
 
   return (
     <React.Fragment>
@@ -113,6 +115,8 @@ const AppContainer = () => {
               categoryColors={categoryColors}
               selectedCategories={selectedCategories}
               onSelectedCategoriesChanged={(sc) => setSelectedCategories(sc)}
+              includeMinor={includeMinor}
+              onSetIncludeMinor={setIncludeMinor}
             />
           </Stack>
           <BasicTimeline

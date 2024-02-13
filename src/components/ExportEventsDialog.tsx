@@ -27,6 +27,7 @@ export default function ExportEventsDialog(props: ExportEventsDialogProps) {
   const [monthColumn, setMonthColumn] = useState("Month");
   const [dayColumn, setDayColumn] = useState("Day");
   const [notesColumn, setNotesColumn] = useState("Notes");
+  const [minorColumn, setMinorColumn] = useState("Minor");
   const [exporting, setExporting] = useState(false);
 
   const exportEvents = async () => {
@@ -41,6 +42,7 @@ export default function ExportEventsDialog(props: ExportEventsDialogProps) {
         month: monthColumn,
         day: dayColumn,
         notes: notesColumn,
+        minor: minorColumn,
       },
     });
 
@@ -101,6 +103,7 @@ export default function ExportEventsDialog(props: ExportEventsDialogProps) {
           {input("Month Column", monthColumn, setMonthColumn)}
           {input("Day Column", dayColumn, setDayColumn)}
           {input("Notes Column", notesColumn, setNotesColumn)}
+          {input("Minor Column", minorColumn, setMinorColumn)}
           <DialogActions>
             <Button
               color="primary"

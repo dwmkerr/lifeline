@@ -36,6 +36,7 @@ export default function ImportEventsDialog(props: ImportEventsDialogProps) {
   const [monthColumn, setMonthColumn] = useState<string | null>(null);
   const [dayColumn, setDayColumn] = useState<string | null>(null);
   const [notesColumn, setNotesColumn] = useState<string | null>(null);
+  const [minorColumn, setMinorColumn] = useState<string | null>(null);
   const [deleteExistingEvents, setDeleteExistingEvents] = useState(false);
   const [importing, setImporting] = useState(false);
 
@@ -53,6 +54,7 @@ export default function ImportEventsDialog(props: ImportEventsDialogProps) {
     setMonthColumn(columns.find((c) => /mon/i.test(c)) || "");
     setDayColumn(columns.find((c) => /day/i.test(c)) || "");
     setNotesColumn(columns.find((c) => /notes/i.test(c)) || "");
+    setMinorColumn(columns.find((c) => /minor/i.test(c)) || "");
   };
 
   const importFileContents = async () => {
@@ -65,6 +67,7 @@ export default function ImportEventsDialog(props: ImportEventsDialogProps) {
         month: monthColumn || "",
         day: dayColumn || "",
         notes: notesColumn || "",
+        minor: minorColumn || "",
       },
     });
     const { lifeEvents, warnings } = results;
@@ -159,6 +162,7 @@ export default function ImportEventsDialog(props: ImportEventsDialogProps) {
             {columnSelect("Month", monthColumn, setMonthColumn)}
             {columnSelect("Day", dayColumn, setDayColumn)}
             {columnSelect("Notes", notesColumn, setNotesColumn)}
+            {columnSelect("Minor", minorColumn, setMinorColumn)}
             <FormControl>
               <Checkbox
                 label="Delete Existing Events"

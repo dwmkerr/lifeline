@@ -34,7 +34,7 @@ export default function BasicTimeline(props: BasicTimelineProps) {
         {props.lifeEvents.map((event) => (
           <TimelineItem key={event.id}>
             <TimelineOppositeContent color="text.secondary">
-              <Typography level="body-sm">
+              <Typography level={event.minor ? "body-xs" : "body-sm"}>
                 {event.year}
                 {event.month ? "-" + `${event.month}`.padStart(2, "0") : ""}
               </Typography>
@@ -81,7 +81,9 @@ export default function BasicTimeline(props: BasicTimelineProps) {
                     }}
                   />
                 </IconButton>
-                <Typography level="title-sm">{event.title}</Typography>
+                <Typography level={event.minor ? "body-xs" : "title-sm"}>
+                  {event.title}
+                </Typography>
               </Stack>
               <Typography level="body-xs">{event.notes}</Typography>
             </TimelineContent>

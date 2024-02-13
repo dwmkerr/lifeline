@@ -10,7 +10,7 @@ import DialogContent from "@mui/joy/DialogContent";
 import Stack from "@mui/joy/Stack";
 
 import { LifeEvent } from "../lib/LifeEvent";
-import { Autocomplete, Textarea } from "@mui/joy";
+import { Autocomplete, Checkbox, Textarea } from "@mui/joy";
 import { LifelineRepository } from "../lib/LifelifeRepository";
 import { useAlertContext } from "./AlertContext";
 import { LifelineError } from "../lib/Errors";
@@ -38,6 +38,7 @@ export default function AddEditEventModal(props: AddEditEventModalProps) {
   const [month, setMonth] = useState(props.event?.month || null);
   const [day, setDay] = useState(props.event?.day || null);
   const [notes, setNotes] = useState(props.event?.notes || null);
+  const [minor, setMinor] = useState(props.event?.minor || false);
 
   //  Focus the title on mount.
   //  Kludgy - can't get 'autoFocus' to work and 'useCallback' didn't work either.
@@ -67,6 +68,7 @@ export default function AddEditEventModal(props: AddEditEventModalProps) {
           month,
           day,
           notes,
+          minor,
         });
       } catch (err) {
         setAlertFromError(LifelineError.fromError("Create Event Error", err));
@@ -90,6 +92,7 @@ export default function AddEditEventModal(props: AddEditEventModalProps) {
           month,
           day,
           notes,
+          minor,
         });
       } catch (err) {
         setAlertFromError(LifelineError.fromError("Save Event Error", err));
@@ -164,6 +167,13 @@ export default function AddEditEventModal(props: AddEditEventModalProps) {
                 maxRows={4}
                 value={notes || ""}
                 onChange={(e) => setNotes(e.target.value)}
+              />
+            </FormControl>
+            <FormControl>
+              <Checkbox
+                label="Minor"
+                checked={minor}
+                onChange={(event) => setMinor(event.target.checked)}
               />
             </FormControl>
             {props.mode === AddEditEventMode.Add ? (
