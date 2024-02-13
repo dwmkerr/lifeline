@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
-import { Box, IconButton } from "@mui/joy";
+import { Box, IconButton, Input } from "@mui/joy";
 import Typography from "@mui/joy/Typography";
+
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
+import ClearIcon from "@mui/icons-material/Clear";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 import UserMenuDropdown from "./UserMenuDropdown";
 import { LifelineRepository } from "../lib/LifelifeRepository";
 import { User, onAuthStateChanged } from "firebase/auth";
 
-export default function HeaderSection() {
+export interface NavBarProps {
+  searchText: string;
+  onSearchTextChanged: (searchText: string) => void;
+}
+
+export default function NavBar(props: NavBarProps) {
   const repository = LifelineRepository.getInstance();
   const [user, setUser] = useState<User | null>(repository.getUser() || null);
 
@@ -52,7 +60,43 @@ export default function HeaderSection() {
         </Typography>
       </Box>
 
-      <Box sx={{ display: "flex", flexDirection: "row", gap: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          gap: 1.5,
+          alignItems: "center",
+        }}
+      >
+        <Input
+          size="sm"
+          variant="outlined"
+          placeholder="Search events..."
+          value={props.searchText}
+          onChange={(e) => {
+            props.onSearchTextChanged(e.target.value);
+          }}
+          startDecorator={<SearchRoundedIcon color="primary" />}
+          endDecorator={
+            <IconButton
+              variant="plain"
+              size="sm"
+              onClick={() => {
+                props.onSearchTextChanged("");
+              }}
+            >
+              <ClearIcon />
+            </IconButton>
+          }
+          sx={{
+            alignSelf: "center",
+            display: {
+              xs: "none",
+              sm: "flex",
+            },
+            width: "480px",
+          }}
+        />
         <UserMenuDropdown user={user || undefined} />
       </Box>
     </Box>
