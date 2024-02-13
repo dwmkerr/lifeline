@@ -61,7 +61,7 @@ jobs:
           projectId: lifeline-dwmkerr
 
       # Deploy to NPM.
-      - run: npm publish
+      - run: "npm publish --access=public"
         if: ${{ steps.release.outputs.release_created }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

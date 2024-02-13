@@ -93,8 +93,7 @@ Quick and dirty task list:
 
 - [ ] feat: user settings (DOB, show age)
 - [ ] feat: show age in timeline
-
-
+- [ ] feat: filter by date
 
 ### Epic Import Preview
 

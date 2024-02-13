@@ -31,6 +31,8 @@ import { LifeEvent } from "./lib/LifeEvent";
 import { CategoryColor } from "./lib/CategoryColor";
 import ImportEventsDialog from "./components/ImportEventsDialog";
 import ExportEventsDialog from "./components/ExportEventsDialog";
+import UserSettingsModal from "./components/UserSettingsModal";
+import { UserSettings } from "./lib/UserSettings";
 
 const materialTheme = materialExtendTheme();
 
@@ -44,7 +46,10 @@ const AppContainer = () => {
     setShowExportDialog,
     showAddEventDialog,
     setShowAddEventDialog,
+    showUserSettingsDialog,
+    setShowUserSettingsDialog,
   } = useDialogContext();
+  const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
   const [lifeEvents, setLifeEvents] = useState<LifeEvent[]>([]);
   const [filteredLifeEvents, setFilteredLifeEvents] = useState<LifeEvent[]>([]);
   const [searchText, setSearchText] = useState<string>("");
@@ -57,6 +62,17 @@ const AppContainer = () => {
   const [includeMinor, setIncludeMinor] = useState<boolean>(true);
   const [editEventModalOpen, setEditEventModalOpen] = useState(false);
   const [editEvent, setEditEvent] = useState<LifeEvent | null>(null);
+
+  //  On mount, wait for the current user (if any). This waits for firebase
+  //  to load based on any cached credentials.
+  useEffect(() => {
+    const waitForUser = async () => {
+      await repository.waitForUser();
+      const userSettings = await repository.getUserSettings();
+      setUserSettings(userSettings);
+    };
+    waitForUser();
+  });
 
   useEffect(() => {
     const unsubscribe = repository.subscribeToLifeEvents((lifeEvents) => {
@@ -155,6 +171,12 @@ const AppContainer = () => {
               open={showAddEventDialog}
               cateories={categories}
               onClose={() => setShowAddEventDialog(false)}
+            />
+          )}
+          {showUserSettingsDialog && userSettings && (
+            <UserSettingsModal
+              userSettings={userSettings}
+              onClose={() => setShowUserSettingsDialog(false)}
             />
           )}
         </Stack>

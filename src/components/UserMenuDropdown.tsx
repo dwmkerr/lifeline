@@ -13,6 +13,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import GoogleIcon from "@mui/icons-material/Google";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 
 import { LifelineRepository } from "../lib/LifelifeRepository";
 import { LifelineError } from "../lib/Errors";
@@ -70,7 +71,6 @@ function UserInfo({ user }: { user: User | undefined }) {
           </Box>
         </Box>
       </MenuItem>
-      <ListDivider />
       {showGoogleSignInButton && (
         <MenuItem onClick={signIn}>
           <GoogleIcon />
@@ -87,7 +87,11 @@ interface UserMenuDropdownProps {
 
 export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
   const repository = LifelineRepository.getInstance();
-  const { setShowImportDialog, setShowExportDialog } = useDialogContext();
+  const {
+    setShowImportDialog,
+    setShowExportDialog,
+    setShowUserSettingsDialog,
+  } = useDialogContext();
 
   return (
     <Dropdown>
@@ -116,6 +120,10 @@ export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
         }}
       >
         <UserInfo user={user} />
+        <MenuItem onClick={() => setShowUserSettingsDialog(true)}>
+          <ManageAccountsIcon />
+          User Settings
+        </MenuItem>
         <ListDivider />
         <MenuItem onClick={() => setShowImportDialog(true)}>
           <UploadIcon />
