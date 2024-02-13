@@ -6,7 +6,6 @@ import {
 } from "@mui/material/styles";
 import { CssVarsProvider as JoyCssVarsProvider } from "@mui/joy/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/joy/Grid";
 import Stack from "@mui/joy/Stack";
 import { OrderByDirection } from "firebase/firestore";
 
@@ -20,10 +19,11 @@ import {
 } from "./components/DialogContext";
 import BasicTimeline from "./components/BasicTimeline";
 import NavBar from "./components/NavBar";
-import AddLifeEvent from "./components/AddLifeEvent";
 import Filters from "./components/Filters";
 import Pagination from "./components/Pagination";
-import EditEventModal from "./components/EditEventModal";
+import AddEditEventModal, {
+  AddEditEventMode,
+} from "./components/AddEditEventModal";
 import { AlertSnackbar } from "./components/AlertSnackbar";
 import { LifelineRepository } from "./lib/LifelifeRepository";
 import { useEffect, useState } from "react";
@@ -42,6 +42,8 @@ const AppContainer = () => {
     setShowImportDialog,
     showExportDialog,
     setShowExportDialog,
+    showAddEventDialog,
+    setShowAddEventDialog,
   } = useDialogContext();
   const [lifeEvents, setLifeEvents] = useState<LifeEvent[]>([]);
   const [filteredLifeEvents, setFilteredLifeEvents] = useState<LifeEvent[]>([]);
@@ -66,7 +68,7 @@ const AppContainer = () => {
     const validCategories = allCategories.filter(
       (c) => c !== null && c !== "",
     ) as string[];
-    const categories = [...new Set(validCategories)];
+    const categories = ["", ...new Set(validCategories)];
     setCategoryColors(CategoryColor.getColors(categories));
     setCategories(categories);
     setSelectedCategories(categories);
@@ -82,9 +84,6 @@ const AppContainer = () => {
 
   return (
     <React.Fragment>
-      <Grid md={12}>
-        <AddLifeEvent cateories={categories} />
-      </Grid>
       <Stack direction="column" alignItems="center" flexGrow={1}>
         <Stack spacing={2} sx={{ px: { xs: 2, md: 4 }, pt: 2, minHeight: 0 }}>
           <Filters
@@ -114,7 +113,8 @@ const AppContainer = () => {
           />
         )}
         {editEventModalOpen && editEvent !== null && (
-          <EditEventModal
+          <AddEditEventModal
+            mode={AddEditEventMode.Edit}
             open={editEventModalOpen}
             event={editEvent}
             cateories={categories}
@@ -126,6 +126,14 @@ const AppContainer = () => {
         )}
         {showExportDialog && (
           <ExportEventsDialog onClose={() => setShowExportDialog(false)} />
+        )}
+        {showAddEventDialog && (
+          <AddEditEventModal
+            mode={AddEditEventMode.Add}
+            open={showAddEventDialog}
+            cateories={categories}
+            onClose={() => setShowAddEventDialog(false)}
+          />
         )}
       </Stack>
     </React.Fragment>

@@ -3,14 +3,15 @@ import { CategoryColorCodes, CategoryColor } from "./CategoryColor";
 describe("CategoryColor", () => {
   describe("getColor", () => {
     test("can create a set of colors based on the sorted unique set of categories", async () => {
-      const categories = ["Life", "Work", "Social", "Travel"];
+      const categories = ["", "Life", "Work", "Social", "Travel"];
       const colors = CategoryColor.getColors(categories);
       //  Note that the results are sorted and unique.
       expect(colors).toEqual({
-        Life: CategoryColorCodes[0],
-        Social: CategoryColorCodes[1],
-        Travel: CategoryColorCodes[2],
-        Work: CategoryColorCodes[3],
+        [""]: CategoryColorCodes[0],
+        Life: CategoryColorCodes[1],
+        Social: CategoryColorCodes[2],
+        Travel: CategoryColorCodes[3],
+        Work: CategoryColorCodes[4],
       });
     });
 

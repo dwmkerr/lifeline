@@ -43,9 +43,7 @@ export default function BasicTimeline(props: BasicTimelineProps) {
             <TimelineSeparator>
               <TimelineDot
                 sx={{
-                  backgroundColor: event.category
-                    ? props.categoryColors[event.category]
-                    : "#333333",
+                  backgroundColor: props.categoryColors[event.category],
                 }}
               />
               <TimelineConnector />

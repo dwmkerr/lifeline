@@ -1,6 +1,7 @@
 //  ChatGPT prompt:
 //  I have an app that shows a load of data each item has a specific category. I am going to color a circle for each category but need a set of hex codes that I can use for the categories, can you provide a javascript array of color codes of a large set of clean and simple colors that are not too bright and have a lot of variety and would work well on a white background?
 export const CategoryColorCodes = [
+  "#cecece", // grey is always used as the 'no category' color
   "#1f77b4", // blue
   "#ff7f0e", // orange
   "#2ca02c", // green

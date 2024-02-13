@@ -12,12 +12,16 @@ import Input from "@mui/joy/Input";
 import ModalClose from "@mui/joy/ModalClose";
 import Stack from "@mui/joy/Stack";
 import Slider, { sliderClasses } from "@mui/joy/Slider";
-import FilterAltOutlined from "@mui/icons-material/FilterAltOutlined";
-import CountrySelector from "./CountrySelector";
-import OrderSelector, { OrderSelectorProps } from "./OrderSelector";
 import { ListItemDecorator, Typography } from "@mui/joy";
 
+import FilterAltOutlined from "@mui/icons-material/FilterAltOutlined";
+import AddIcon from "@mui/icons-material/Add";
+
+import CountrySelector from "./CountrySelector";
+import OrderSelector, { OrderSelectorProps } from "./OrderSelector";
+
 import CircleIcon from "@mui/icons-material/Circle";
+import { useDialogContext } from "./DialogContext";
 
 function valueText(value: number) {
   return `$${value.toLocaleString("en-US")}`;
@@ -31,6 +35,8 @@ export type FiltersProps = OrderSelectorProps & {
 };
 
 export default function Filters(props: FiltersProps) {
+  const { setShowAddEventDialog } = useDialogContext();
+
   const [open, setOpen] = React.useState(false);
   return (
     <Stack
@@ -48,6 +54,14 @@ export default function Filters(props: FiltersProps) {
         onClick={() => setOpen(true)}
       >
         Filters
+      </Button>
+      <Button
+        variant="outlined"
+        color="neutral"
+        startDecorator={<AddIcon />}
+        onClick={() => setShowAddEventDialog(true)}
+      >
+        Add...
       </Button>
       <OrderSelector {...props} />
       <Drawer open={open} onClose={() => setOpen(false)} hideBackdrop={true}>
@@ -164,7 +178,7 @@ export default function Filters(props: FiltersProps) {
                     overlay
                     disableIcon
                     variant="soft"
-                    label={category}
+                    label={category || "(No Category)"}
                     checked={selected}
                     onChange={(event) => {
                       const newSet = event.target.checked
