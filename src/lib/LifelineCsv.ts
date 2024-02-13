@@ -41,6 +41,7 @@ export type ImportCsvOptions = {
     month: string;
     day: string;
     notes: string;
+    minor: string;
   };
 };
 
@@ -88,6 +89,7 @@ export async function importCsv(
     const month = record?.[options.columnMappings.month];
     const day = record?.[options.columnMappings.day];
     const notes = record?.[options.columnMappings.notes];
+    const minor = record?.[options.columnMappings.minor];
 
     return {
       year,
@@ -96,6 +98,7 @@ export async function importCsv(
       category,
       title,
       notes,
+      minor: minor === "true",
     };
   });
 
@@ -128,6 +131,7 @@ export async function exportCsv(
     options.columnMappings.month,
     options.columnMappings.day,
     options.columnMappings.notes,
+    options.columnMappings.minor,
   ];
   const rows = events.map((event) => [
     event.title,
@@ -136,6 +140,7 @@ export async function exportCsv(
     event.month,
     event.day,
     event.notes,
+    event.minor ? "true" : "false",
   ]);
 
   const csv = stringify([columnsRow, ...rows]);

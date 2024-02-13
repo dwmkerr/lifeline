@@ -3,7 +3,7 @@ import { checkCsvContents, importCsv, exportCsv } from "./LifelineCsv";
 describe("LifelineCsv", () => {
   describe("checkCsvContents", () => {
     test("can check a CSV file for columns and rows", async () => {
-      const csv = `Year,Month,Day,Age,Category,Title,Notes,,,,,,,,,,,,,,,,,,,,,,
+      const csv = `Year,Month,Day,Age,Category,Title,Notes,Minor,,,,,,,,,,,,,,,,,,,,,
 1985,1,,,,"Belfast",,,,,,,,,,,,,,,,,,,,,,,
 1987,2,,,,Colchester,,,,,,,,,,,,,,,,,,,,,,,
 `;
@@ -16,6 +16,7 @@ describe("LifelineCsv", () => {
         "Category",
         "Title",
         "Notes",
+        "Minor",
       ]);
       expect(rowCount).toEqual(2);
     });
@@ -30,11 +31,12 @@ describe("LifelineCsv", () => {
         month: "Month",
         day: "Day",
         notes: "Notes",
+        minor: "Minor",
       },
     };
 
     test("can import a basic CSV file", async () => {
-      const csv = `Year,Month,Day,Age,Category,Title,Notes,,,,,,,,,,,,,,,,,,,,,,
+      const csv = `Year,Month,Day,Age,Category,Title,Notes,Minor,,,,,,,,,,,,,,,,,,,,,
 1985,1,,,,"Belfast",,,,,,,,,,,,,,,,,,,,,,,
 1987,2,,,,Colchester,,,,,,,,,,,,,,,,,,,,,,,
 `;
@@ -46,17 +48,19 @@ describe("LifelineCsv", () => {
           month: 1,
           title: "Belfast",
           notes: "",
+          minor: false,
         },
         {
           year: 1987,
           month: 2,
           title: "Colchester",
           notes: "",
+          minor: false,
         },
       ]);
     });
     test("can ignore empty CSV lines", async () => {
-      const csv = `Year,Month,Day,Age,Category,Title,Notes,,,,,,,,,,,,,,,,,,,,,,
+      const csv = `Year,Month,Day,Age,Category,Title,Notes,Minor,,,,,,,,,,,,,,,,,,,,,
 1985,1,,,,"Belfast",,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -75,12 +79,14 @@ describe("LifelineCsv", () => {
           month: 1,
           title: "Belfast",
           notes: "",
+          minor: false,
         },
         {
           year: 1987,
           month: 2,
           title: "Colchester",
           notes: "",
+          minor: false,
         },
       ]);
     });
@@ -95,6 +101,7 @@ describe("LifelineCsv", () => {
         month: "Month",
         day: "Day",
         notes: "Notes",
+        minor: "Minor",
       },
     };
 
@@ -107,6 +114,7 @@ describe("LifelineCsv", () => {
           title: "Belfast",
           category: "Life",
           notes: null,
+          minor: false,
         },
         {
           year: 1987,
@@ -115,13 +123,14 @@ describe("LifelineCsv", () => {
           title: "Colchester",
           category: "Life",
           notes: null,
+          minor: true,
         },
       ];
 
       const csv = await exportCsv(events, defaultOptions);
-      const expectedCsv = `Title,Category,Year,Month,Day,Notes
-Belfast,Life,1985,1,,
-Colchester,Life,1987,2,,
+      const expectedCsv = `Title,Category,Year,Month,Day,Notes,Minor
+Belfast,Life,1985,1,,false
+Colchester,Life,1987,2,,true
 `;
       expect(csv).toEqual(expectedCsv);
     });

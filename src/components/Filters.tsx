@@ -11,7 +11,6 @@ import FormLabel from "@mui/joy/FormLabel";
 import Input from "@mui/joy/Input";
 import ModalClose from "@mui/joy/ModalClose";
 import Stack from "@mui/joy/Stack";
-import Slider, { sliderClasses } from "@mui/joy/Slider";
 import { ListItemDecorator, Typography } from "@mui/joy";
 
 import FilterAltOutlined from "@mui/icons-material/FilterAltOutlined";
@@ -23,15 +22,13 @@ import OrderSelector, { OrderSelectorProps } from "./OrderSelector";
 import CircleIcon from "@mui/icons-material/Circle";
 import { useDialogContext } from "./DialogContext";
 
-function valueText(value: number) {
-  return `$${value.toLocaleString("en-US")}`;
-}
-
 export type FiltersProps = OrderSelectorProps & {
   categories: string[];
   categoryColors: Record<string, string>;
   selectedCategories: string[];
   onSelectedCategoriesChanged: (selectedCategories: string[]) => void;
+  includeMinor: boolean;
+  onSetIncludeMinor: (includeMinor: boolean) => void;
 };
 
 export default function Filters(props: FiltersProps) {
@@ -119,28 +116,13 @@ export default function Filters(props: FiltersProps) {
             />
           </Box>
           <FormControl>
-            <FormLabel>Price range</FormLabel>
-            <Slider
-              defaultValue={[2000, 4900]}
-              step={100}
-              min={0}
-              max={10000}
-              getAriaValueText={valueText}
-              valueLabelDisplay="auto"
-              valueLabelFormat={valueText}
-              marks={[
-                { value: 0, label: "$0" },
-                { value: 5000, label: "$5,000" },
-                { value: 10000, label: "$10,000" },
-              ]}
-              sx={{
-                [`& .${sliderClasses.markLabel}[data-index="0"]`]: {
-                  transform: "none",
-                },
-                [`& .${sliderClasses.markLabel}[data-index="2"]`]: {
-                  transform: "translateX(-100%)",
-                },
-              }}
+            <FormLabel>Events</FormLabel>
+            <Checkbox
+              label="Show Minor Events"
+              checked={props.includeMinor}
+              onChange={(event) =>
+                props.onSetIncludeMinor(event.target.checked)
+              }
             />
           </FormControl>
           <FormLabel>Category</FormLabel>

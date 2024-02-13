@@ -7,6 +7,7 @@ export interface LifeEvent {
   month: number | null;
   day: number | null;
   notes: string | null;
+  minor: boolean;
 }
 
 export interface SerializableLifeEvent {
@@ -18,6 +19,7 @@ export interface SerializableLifeEvent {
   month: number | null;
   day: number | null;
   notes: string | null;
+  minor: boolean;
 }
 
 export function toSerializableObject(event: LifeEvent): SerializableLifeEvent {
@@ -49,5 +51,6 @@ export function fromSerializableObject(
     month: object.month || null,
     day: object.day || null,
     notes: object.notes || null,
+    minor: object.minor || false,
   };
 }
