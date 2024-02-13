@@ -34,7 +34,7 @@ export default {
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: true,
-  collectCoverageFrom: ["src/**/*.{js,ts}"],
+  collectCoverageFrom: ["src/**/*.{js,ts,jsx,tsx}"],
 
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",

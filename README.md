@@ -88,7 +88,10 @@ Quick and dirty task list:
 - [x] retire 'add event' from the top bar
 - [ ] feat: deploy to firebase on build
 
+- [ ] feat: major/minor events
 - [ ] feat: show age in timeline, age settings as a modal
+
+- [ ] search bar
 
 - [ ] search bar
 
