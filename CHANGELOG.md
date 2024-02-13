@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/dwmkerr/lifeline/compare/v2.2.0...v2.3.0) (2024-02-13)
+
+
+### Features
+
+* minor events ([#19](https://github.com/dwmkerr/lifeline/issues/19)) ([fc48fcd](https://github.com/dwmkerr/lifeline/commit/fc48fcd3b9c4cff15c45ee25df845a37cec2e8fe))
+
 ## [2.2.0](https://github.com/dwmkerr/lifeline/compare/v2.1.0...v2.2.0) (2024-02-13)
 
 
