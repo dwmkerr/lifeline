@@ -1,8 +1,10 @@
 # lifeline
 
-[![codecov](https://codecov.io/gh/dwmkerr/lifeline/graph/badge.svg?token=lI5Swxa2tj)](https://codecov.io/gh/dwmkerr/lifeline)
+[![main](https://github.com/dwmkerr/lifeline/actions/workflows/main.yaml/badge.svg)](https://github.com/dwmkerr/lifeline/actions/workflows/main.yaml) [![codecov](https://codecov.io/gh/dwmkerr/lifeline/graph/badge.svg?token=lI5Swxa2tj)](https://codecov.io/gh/dwmkerr/lifeline)
 
-Visualise and track key life events with an interactive timeline
+Visualise and track key life events with an interactive timeline.
+
+https://lifeline-dwmkerr.web.app/
 
 ## Developer Guide
 
