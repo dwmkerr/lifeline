@@ -31,6 +31,9 @@ import { LifeEvent } from "./lib/LifeEvent";
 import { CategoryColor } from "./lib/CategoryColor";
 import ImportEventsDialog from "./components/ImportEventsDialog";
 import ExportEventsDialog from "./components/ExportEventsDialog";
+import UserSettingsModal from "./components/UserSettingsModal";
+import { UserSettings } from "./lib/UserSettings";
+import { User } from "firebase/auth";
 
 const materialTheme = materialExtendTheme();
 
@@ -44,7 +47,11 @@ const AppContainer = () => {
     setShowExportDialog,
     showAddEventDialog,
     setShowAddEventDialog,
+    showUserSettingsDialog,
+    setShowUserSettingsDialog,
   } = useDialogContext();
+  const [user, setUser] = useState<User | null>(null);
+  const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
   const [lifeEvents, setLifeEvents] = useState<LifeEvent[]>([]);
   const [filteredLifeEvents, setFilteredLifeEvents] = useState<LifeEvent[]>([]);
   const [searchText, setSearchText] = useState<string>("");
@@ -57,6 +64,25 @@ const AppContainer = () => {
   const [includeMinor, setIncludeMinor] = useState<boolean>(true);
   const [editEventModalOpen, setEditEventModalOpen] = useState(false);
   const [editEvent, setEditEvent] = useState<LifeEvent | null>(null);
+
+  //  On mount, wait for the current user (if any). This waits for firebase
+  //  to load based on any cached credentials.
+  useEffect(() => {
+    const waitForUser = async () => {
+      const user = await repository.waitForUser();
+      setUser(user);
+    };
+    waitForUser();
+  });
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    return repository.subscribeToUserSettings((userSettings) => {
+      setUserSettings(userSettings);
+    });
+  }, [user]);
 
   useEffect(() => {
     const unsubscribe = repository.subscribeToLifeEvents((lifeEvents) => {
@@ -126,6 +152,11 @@ const AppContainer = () => {
               setEditEvent(event);
               setEditEventModalOpen(true);
             }}
+            showAgeDOB={
+              userSettings?.showAgeOnTimeline && userSettings.dateOfBirth
+                ? userSettings.dateOfBirth
+                : undefined
+            }
           />
           <Pagination />
           {alertInfo && (
@@ -155,6 +186,12 @@ const AppContainer = () => {
               open={showAddEventDialog}
               cateories={categories}
               onClose={() => setShowAddEventDialog(false)}
+            />
+          )}
+          {showUserSettingsDialog && userSettings && (
+            <UserSettingsModal
+              userSettings={userSettings}
+              onClose={() => setShowUserSettingsDialog(false)}
             />
           )}
         </Stack>

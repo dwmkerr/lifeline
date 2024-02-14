@@ -4,6 +4,8 @@ import {
   getFirestore,
   connectFirestoreEmulator,
   Firestore,
+  getDoc,
+  Timestamp,
 } from "firebase/firestore";
 import {
   collection,
@@ -29,10 +31,11 @@ import {
 } from "./LifeEvent";
 import { GoogleAuthProvider, Unsubscribe, User } from "firebase/auth";
 import { LifelineError } from "./Errors";
+import { SerializableUserSettings, UserSettings } from "./UserSettings";
 
 const lifeEventConverter = {
-  toFirestore(puzzle: WithFieldValue<LifeEvent>): SerializableLifeEvent {
-    return toSerializableObject(puzzle as LifeEvent);
+  toFirestore(lifeEvent: WithFieldValue<LifeEvent>): SerializableLifeEvent {
+    return toSerializableObject(lifeEvent as LifeEvent);
   },
   fromFirestore(
     snapshot: QueryDocumentSnapshot,
@@ -40,6 +43,28 @@ const lifeEventConverter = {
   ): LifeEvent {
     const data = snapshot.data(options) as SerializableLifeEvent;
     return fromSerializableObject(data);
+  },
+};
+const userSettingsConverter = {
+  toFirestore(
+    userSettings: WithFieldValue<UserSettings>,
+  ): SerializableUserSettings {
+    const settings = userSettings as UserSettings;
+    return {
+      ...settings,
+      dateOfBirth:
+        settings.dateOfBirth && Timestamp.fromDate(settings.dateOfBirth),
+    } as SerializableUserSettings;
+  },
+  fromFirestore(
+    snapshot: QueryDocumentSnapshot,
+    options: SnapshotOptions,
+  ): UserSettings {
+    const data = snapshot.data(options) as SerializableUserSettings;
+    return {
+      ...data,
+      dateOfBirth: data.dateOfBirth?.toDate(),
+    };
   },
 };
 
@@ -65,6 +90,10 @@ export class LifelineRepository {
     LifeEvent,
     SerializableLifeEvent
   >;
+  private userSettingsCollection: CollectionReference<
+    UserSettings,
+    SerializableUserSettings
+  >;
 
   private constructor() {
     this.app = initializeApp(firebaseConfig);
@@ -74,6 +103,10 @@ export class LifelineRepository {
     this.lifeEventsCollection = collection(this.db, "lifeevents").withConverter(
       lifeEventConverter,
     );
+    this.userSettingsCollection = collection(
+      this.db,
+      "userSettings",
+    ).withConverter(userSettingsConverter);
   }
 
   public static getInstance(): LifelineRepository {
@@ -199,6 +232,47 @@ export class LifelineRepository {
     const lifeEvents = await this.load();
     const records = lifeEvents.map(toSerializableObject);
     return records;
+  }
+
+  async getUserSettings(): Promise<UserSettings> {
+    const uid = this.getUser()?.uid;
+    if (!uid) {
+      throw new LifelineError("Get Settings Error", "User is not logged in");
+    }
+    const docRef = doc(this.userSettingsCollection, uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      return {
+        userId: uid,
+        dateOfBirth: undefined,
+        showAgeOnTimeline: false,
+      };
+    }
+  }
+
+  subscribeToUserSettings(
+    onChange: (userSettings: UserSettings) => void,
+  ): Unsubscribe {
+    const uid = this.getUser()?.uid;
+    if (!uid) {
+      throw new LifelineError("Get Settings Error", "User is not logged in");
+    }
+    return onSnapshot(doc(this.userSettingsCollection, uid), (doc) => {
+      const userSettings = doc.data();
+      if (userSettings) {
+        onChange(userSettings);
+      }
+    });
+  }
+
+  async saveUserSettings(userSettings: UserSettings): Promise<void> {
+    await setDoc(
+      doc(this.userSettingsCollection, userSettings.userId),
+      userSettings,
+    );
   }
 
   getAuth(): Auth {

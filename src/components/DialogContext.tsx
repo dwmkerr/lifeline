@@ -12,6 +12,8 @@ interface DialogContextValue {
   setShowExportDialog: (show: boolean) => void;
   showAddEventDialog: boolean;
   setShowAddEventDialog: (show: boolean) => void;
+  showUserSettingsDialog: boolean;
+  setShowUserSettingsDialog: (show: boolean) => void;
 }
 
 const DialogContext = createContext<DialogContextValue | null>(null);
@@ -22,6 +24,8 @@ export const DialogContextProvider: React.FC<PropsWithChildren> = ({
   const [showImportDialog, setShowImportDialog] = useState<boolean>(false);
   const [showExportDialog, setShowExportDialog] = useState<boolean>(false);
   const [showAddEventDialog, setShowAddEventDialog] = useState<boolean>(false);
+  const [showUserSettingsDialog, setShowUserSettingsDialog] =
+    useState<boolean>(false);
 
   const value: DialogContextValue = {
     showImportDialog,
@@ -30,6 +34,8 @@ export const DialogContextProvider: React.FC<PropsWithChildren> = ({
     setShowExportDialog,
     showAddEventDialog,
     setShowAddEventDialog,
+    showUserSettingsDialog,
+    setShowUserSettingsDialog,
   };
 
   return (
