@@ -11,24 +11,29 @@ import FormLabel from "@mui/joy/FormLabel";
 import Input from "@mui/joy/Input";
 import ModalClose from "@mui/joy/ModalClose";
 import Stack from "@mui/joy/Stack";
-import { ListItemDecorator, Typography } from "@mui/joy";
+import { IconButton, ListItemDecorator, Typography } from "@mui/joy";
 
 import FilterAltOutlined from "@mui/icons-material/FilterAltOutlined";
 import AddIcon from "@mui/icons-material/Add";
+import ClearIcon from "@mui/icons-material/Clear";
 
-import CountrySelector from "./CountrySelector";
 import OrderSelector, { OrderSelectorProps } from "./OrderSelector";
 
 import CircleIcon from "@mui/icons-material/Circle";
 import { useDialogContext } from "./DialogContext";
 
+export type FilterSettings = {
+  selectedCategories: string[];
+  includeMinor: boolean;
+  startDate?: Date;
+  endDate?: Date;
+};
+
 export type FiltersProps = OrderSelectorProps & {
   categories: string[];
   categoryColors: Record<string, string>;
-  selectedCategories: string[];
-  onSelectedCategoriesChanged: (selectedCategories: string[]) => void;
-  includeMinor: boolean;
-  onSetIncludeMinor: (includeMinor: boolean) => void;
+  filterSettings: FilterSettings;
+  onChangeFilterSettings: (filterSettings: FilterSettings) => void;
 };
 
 export default function Filters(props: FiltersProps) {
@@ -88,41 +93,82 @@ export default function Filters(props: FiltersProps) {
         </Box>
         <Stack useFlexGap spacing={3} sx={{ p: 2 }}>
           <DialogTitle>Filters</DialogTitle>
-          <CountrySelector />
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "1fr auto 1fr",
-              gridTemplateRows: "auto auto",
-              gap: 1,
-            }}
-          >
-            <FormLabel htmlFor="filters-start-date">Start date</FormLabel>
-            <div />
-            <FormLabel htmlFor="filters-end-date">End date</FormLabel>
-
+          <FormControl>
+            <FormLabel>Start Date</FormLabel>
             <Input
               id="filters-start-date"
               type="date"
-              placeholder="Jan 6 - Jan 13"
               aria-label="Date"
+              value={
+                props.filterSettings.startDate
+                  ?.toISOString()
+                  .substring(0, 10) || ""
+              }
+              onChange={(e) => {
+                props.onChangeFilterSettings({
+                  ...props.filterSettings,
+                  startDate: new Date(e.target.value),
+                });
+              }}
+              endDecorator={
+                <IconButton
+                  variant="plain"
+                  size="sm"
+                  onClick={() => {
+                    props.onChangeFilterSettings({
+                      ...props.filterSettings,
+                      startDate: undefined,
+                    });
+                  }}
+                >
+                  <ClearIcon />
+                </IconButton>
+              }
             />
-            <Box sx={{ alignSelf: "center" }}>-</Box>
+          </FormControl>
+          <FormControl>
+            <FormLabel>End Date</FormLabel>
             <Input
               id="filters-end-date"
               type="date"
-              placeholder="Jan 6 - Jan 13"
               aria-label="Date"
+              value={
+                props.filterSettings.endDate?.toISOString().substring(0, 10) ||
+                ""
+              }
+              onChange={(e) => {
+                props.onChangeFilterSettings({
+                  ...props.filterSettings,
+                  endDate: new Date(e.target.value),
+                });
+              }}
+              endDecorator={
+                <IconButton
+                  variant="plain"
+                  size="sm"
+                  onClick={() => {
+                    props.onChangeFilterSettings({
+                      ...props.filterSettings,
+                      endDate: undefined,
+                    });
+                  }}
+                >
+                  <ClearIcon />
+                </IconButton>
+              }
             />
-          </Box>
+          </FormControl>
           <FormControl>
             <FormLabel>Events</FormLabel>
             <Checkbox
               label="Show Minor Events"
-              checked={props.includeMinor}
-              onChange={(event) =>
-                props.onSetIncludeMinor(event.target.checked)
-              }
+              checked={props.filterSettings.includeMinor}
+              onChange={(event) => {
+                props.onChangeFilterSettings({
+                  ...props.filterSettings,
+                  includeMinor: event.target.checked,
+                });
+              }}
             />
           </FormControl>
           <FormLabel>Category</FormLabel>
@@ -136,8 +182,9 @@ export default function Filters(props: FiltersProps) {
           >
             {props.categories.map((category) => {
               const selected =
-                props.selectedCategories.find((c) => c === category) !==
-                undefined;
+                props.filterSettings.selectedCategories.find(
+                  (c) => c === category,
+                ) !== undefined;
               const color = selected
                 ? category
                   ? props.categoryColors[category]
@@ -164,13 +211,19 @@ export default function Filters(props: FiltersProps) {
                     checked={selected}
                     onChange={(event) => {
                       const newSet = event.target.checked
-                        ? new Set([...props.selectedCategories, category])
+                        ? new Set([
+                            ...props.filterSettings.selectedCategories,
+                            category,
+                          ])
                         : new Set(
-                            props.selectedCategories.filter(
+                            props.filterSettings.selectedCategories.filter(
                               (sc) => sc !== category,
                             ),
                           );
-                      props.onSelectedCategoriesChanged([...newSet]);
+                      props.onChangeFilterSettings({
+                        ...props.filterSettings,
+                        selectedCategories: [...newSet],
+                      });
                     }}
                     slotProps={{
                       action: ({ checked }) => ({

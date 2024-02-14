@@ -264,6 +264,9 @@ export class LifelineRepository {
       const userSettings = doc.data();
       if (userSettings) {
         onChange(userSettings);
+      } else {
+        //  Return default settings.
+        onChange({ userId: uid, showAgeOnTimeline: false });
       }
     });
   }

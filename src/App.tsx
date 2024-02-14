@@ -19,7 +19,7 @@ import {
 } from "./components/DialogContext";
 import BasicTimeline from "./components/BasicTimeline";
 import NavBar from "./components/NavBar";
-import Filters from "./components/Filters";
+import Filters, { FilterSettings } from "./components/Filters";
 import Pagination from "./components/Pagination";
 import AddEditEventModal, {
   AddEditEventMode,
@@ -54,14 +54,18 @@ const AppContainer = () => {
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
   const [lifeEvents, setLifeEvents] = useState<LifeEvent[]>([]);
   const [filteredLifeEvents, setFilteredLifeEvents] = useState<LifeEvent[]>([]);
+  const [filterSettings, setFilterSettings] = useState<FilterSettings>({
+    selectedCategories: [],
+    includeMinor: true,
+    startDate: undefined,
+    endDate: undefined,
+  });
   const [searchText, setSearchText] = useState<string>("");
   const [sortDirection, setSortDirection] = useState<OrderByDirection>("asc");
   const [categories, setCategories] = useState<string[]>([]);
   const [categoryColors, setCategoryColors] = useState<Record<string, string>>(
     {},
   );
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [includeMinor, setIncludeMinor] = useState<boolean>(true);
   const [editEventModalOpen, setEditEventModalOpen] = useState(false);
   const [editEvent, setEditEvent] = useState<LifeEvent | null>(null);
 
@@ -99,7 +103,10 @@ const AppContainer = () => {
     const categories = ["", ...new Set(validCategories)];
     setCategoryColors(CategoryColor.getColors(categories));
     setCategories(categories);
-    setSelectedCategories(categories);
+    setFilterSettings({
+      ...filterSettings,
+      selectedCategories: categories,
+    });
   }, [lifeEvents]);
 
   //  Filter the events and apply the search.
@@ -107,18 +114,35 @@ const AppContainer = () => {
     const matchSearch = (val: string) =>
       val.toLowerCase().indexOf(searchText.toLowerCase()) !== -1;
     const filter = (event: LifeEvent): boolean => {
+      const eventDate = new Date(
+        event.year,
+        event.month ? event.month - 1 : 0,
+        event.day ? event.day : 1,
+      );
       const categoryMatch =
-        selectedCategories.indexOf(event.category || "") !== -1;
+        filterSettings.selectedCategories.indexOf(event.category || "") !== -1;
       const searchMatch =
         searchText === "" ||
         matchSearch(event.title) ||
         matchSearch(event.notes || "");
-      const minorMatch = includeMinor || event.minor === false;
-      return categoryMatch && searchMatch && minorMatch;
+      const minorMatch = filterSettings.includeMinor || event.minor === false;
+      const matchStartDate = filterSettings.startDate
+        ? eventDate.getTime() >= filterSettings.startDate.getTime()
+        : true;
+      const matchEndDate = filterSettings.endDate
+        ? eventDate.getTime() <= filterSettings.endDate.getTime()
+        : true;
+      return (
+        categoryMatch &&
+        searchMatch &&
+        minorMatch &&
+        matchStartDate &&
+        matchEndDate
+      );
     };
 
     setFilteredLifeEvents(lifeEvents.filter(filter));
-  }, [selectedCategories, searchText, includeMinor]);
+  }, [searchText, filterSettings]);
 
   return (
     <React.Fragment>
@@ -133,16 +157,14 @@ const AppContainer = () => {
         <Stack direction="column" alignItems="center" flexGrow={1}>
           <Stack spacing={2} sx={{ px: { xs: 2, md: 4 }, pt: 2, minHeight: 0 }}>
             <Filters
+              filterSettings={filterSettings}
+              onChangeFilterSettings={setFilterSettings}
               sortDirection={sortDirection}
               onSetSortDirection={(sortDirection) =>
                 setSortDirection(sortDirection)
               }
               categories={categories}
               categoryColors={categoryColors}
-              selectedCategories={selectedCategories}
-              onSelectedCategoriesChanged={(sc) => setSelectedCategories(sc)}
-              includeMinor={includeMinor}
-              onSetIncludeMinor={setIncludeMinor}
             />
           </Stack>
           <BasicTimeline
