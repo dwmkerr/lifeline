@@ -15,11 +15,13 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { LifeEvent } from "../lib/LifeEvent";
 import { LifelineRepository } from "../lib/LifelifeRepository";
 import DeleteEventModal from "./DeleteEventModal";
+import { calculateAge } from "../lib/calculate-age";
 
 interface BasicTimelineProps {
   lifeEvents: LifeEvent[];
   categoryColors: Record<string, string>;
   onEditEvent: (event: LifeEvent) => void;
+  showAgeDOB?: Date;
 }
 
 export default function BasicTimeline(props: BasicTimelineProps) {
@@ -27,6 +29,16 @@ export default function BasicTimeline(props: BasicTimelineProps) {
   const [deleteModalEvent, setDeleteModalEvent] = useState<LifeEvent | null>(
     null,
   );
+
+  const age = (event: LifeEvent, dob: Date): string => {
+    const eventDate = new Date(
+      event.year,
+      event.month ? event.month - 1 : 0,
+      event.day ? event.day : 1,
+    );
+    const ageStr = calculateAge(eventDate, dob);
+    return `${ageStr} old`;
+  };
 
   return (
     <React.Fragment>
@@ -38,6 +50,11 @@ export default function BasicTimeline(props: BasicTimelineProps) {
                 {event.year}
                 {event.month ? "-" + `${event.month}`.padStart(2, "0") : ""}
               </Typography>
+              {props.showAgeDOB && (
+                <Typography level="body-xs">
+                  <em>{age(event, props.showAgeDOB)}</em>
+                </Typography>
+              )}
               <Typography level="body-xs">{event.category}</Typography>
             </TimelineOppositeContent>
             <TimelineSeparator>

@@ -90,9 +90,9 @@ Quick and dirty task list:
 - [x] feat: deploy to firebase on build
 - [x] search bar
 - [x] feat: major/minor events
-
 - [ ] feat: user settings (DOB, show age)
 - [ ] feat: show age in timeline
+
 - [ ] feat: filter by date
 
 ### Epic Import Preview

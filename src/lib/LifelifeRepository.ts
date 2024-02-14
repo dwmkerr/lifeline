@@ -253,6 +253,21 @@ export class LifelineRepository {
     }
   }
 
+  subscribeToUserSettings(
+    onChange: (userSettings: UserSettings) => void,
+  ): Unsubscribe {
+    const uid = this.getUser()?.uid;
+    if (!uid) {
+      throw new LifelineError("Get Settings Error", "User is not logged in");
+    }
+    return onSnapshot(doc(this.userSettingsCollection, uid), (doc) => {
+      const userSettings = doc.data();
+      if (userSettings) {
+        onChange(userSettings);
+      }
+    });
+  }
+
   async saveUserSettings(userSettings: UserSettings): Promise<void> {
     await setDoc(
       doc(this.userSettingsCollection, userSettings.userId),
