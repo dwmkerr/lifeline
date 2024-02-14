@@ -23,11 +23,9 @@ export default function UserSettingsModal(props: UserSettingsModalProps) {
   const repository = LifelineRepository.getInstance();
   const { setAlertFromError } = useAlertContext();
 
-  const dateStr =
-    props.userSettings.dateOfBirth !== undefined
-      ? props.userSettings.dateOfBirth.toISOString().substr(0, 10)
-      : "";
-  const [dobString, setDobString] = useState<string>(dateStr);
+  const [dob, setDob] = useState<Date | undefined>(
+    props.userSettings.dateOfBirth,
+  );
   const [showAgeOnTimeline, setShowAgeOnTimeline] = useState<boolean>(
     props.userSettings.showAgeOnTimeline,
   );
@@ -36,7 +34,7 @@ export default function UserSettingsModal(props: UserSettingsModalProps) {
     try {
       repository.saveUserSettings({
         ...props.userSettings,
-        dateOfBirth: new Date(dobString),
+        dateOfBirth: dob,
         showAgeOnTimeline,
       });
     } catch (err) {
@@ -62,8 +60,9 @@ export default function UserSettingsModal(props: UserSettingsModalProps) {
                 id="dob"
                 placeholder="1995-01-01"
                 aria-label="Date of Birth"
-                value={dobString}
-                onChange={(e) => setDobString(e.target.value)}
+                type="date"
+                value={dob?.toISOString().substring(0, 10) || ""}
+                onChange={(e) => setDob(new Date(e.target.value))}
               />
             </FormControl>
             <FormControl>
