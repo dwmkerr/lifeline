@@ -51,4 +51,18 @@ export abstract class CategoryColor {
     );
     return colors;
   }
+
+  public static toEmojiAndName(category: string) {
+    const emojiRex = /(\p{Emoji})(.*)/gu;
+    const matches = category.matchAll(emojiRex);
+    for (const match of matches) {
+      console.log(match);
+      return {
+        emoji: match[1] || "",
+        name: match[2] || "",
+      };
+    }
+
+    return { emoji: "", name: category };
+  }
 }

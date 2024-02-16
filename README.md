@@ -92,10 +92,46 @@ Quick and dirty task list:
 - [x] feat: major/minor events
 - [x] feat: user settings (DOB, show age)
 - [x] feat: show age in timeline
-- [ ] feat: filter by date, refactor into a filters object
+- [x] feat: filter by date, refactor into a filters object
+
+- [ ] feat: emoji for categories
+- [ ] feat: emoji in category dot
+- [ ] feat: suggest categories in drop down list for new events
+- [ ] feat: prevent focus for emoji picker?
+- [ ] feat: for category select in add/edit, consider the categories in autocomplete with an 'add' button to add a new category
+
+- [x] feat: filters select all select none
+- [x] bug: add events resets filters (e.g. category)
+- [ ] bug: cannot key in a category in add/edit event
+
+- [ ] feat: filters button on navbar, side drawer without overlay / close panel icon
+
+- [ ] bug: hard bug - category selection in the filters should be preserved when adding/deleting/changing events, first try caused them all to blank out, next try didn't pick up new ones, etc
 
 ### Epic Import Preview
 
 - [ ] feat: import preview / back to column map
 - [ ] feat: show warning messages on import preview
 - [ ] bug: check autofocus on import/export
+
+### Events to add
+
+- adopted
+- remarry / ruth
+- remarry / guy
+- meet / patrick
+
+### Feedback
+
+Ideas from Michelle:
+
+Adverse child experiences scoring. For life events, can you categorise the event as e.g. 'moving', 'depression', 'psychiatric event', 'relationship'. These could be thought of as life-transitions. You could then see that for example prior to a depressive episode there were a series of life transitions that were stressful.
+
+In terms of your own attitude about things that happened; was this event for you happy or dreadful? Could you also add how you feel about it.
+
+Also look at 'impact' as major/minor. The size of the icon could be the majority of the event. Things could be color coded or icons could be sized to see how impactful the event is but also then what the impact is.
+
+When you click and collapse into chronological order. Consider an emoji for how you feel about it.
+
+- [ ] feat: 'major' should be re-classified as 'impact', which could be minor/intense/etc, this should be an emoji based system
+- [ ] feat: 'category' should offer an emoji, major events should show larger so that they can be more easily seen

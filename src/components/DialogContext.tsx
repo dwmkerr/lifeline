@@ -4,6 +4,7 @@ import React, {
   useContext,
   useState,
 } from "react";
+import { LifeEvent } from "../lib/LifeEvent";
 
 interface DialogContextValue {
   showImportDialog: boolean;
@@ -14,6 +15,14 @@ interface DialogContextValue {
   setShowAddEventDialog: (show: boolean) => void;
   showUserSettingsDialog: boolean;
   setShowUserSettingsDialog: (show: boolean) => void;
+  showFilters: boolean;
+  setShowFilters: (show: boolean) => void;
+  showCategoriesDialog: boolean;
+  setShowCategoriesDialog: (show: boolean) => void;
+  deleteEventModalEvent?: LifeEvent;
+  setDeleteEventModalEvent: (event?: LifeEvent) => void;
+  editEventModalEvent?: LifeEvent;
+  setEditEventModalEvent: (event?: LifeEvent) => void;
 }
 
 const DialogContext = createContext<DialogContextValue | null>(null);
@@ -26,6 +35,15 @@ export const DialogContextProvider: React.FC<PropsWithChildren> = ({
   const [showAddEventDialog, setShowAddEventDialog] = useState<boolean>(false);
   const [showUserSettingsDialog, setShowUserSettingsDialog] =
     useState<boolean>(false);
+  const [showFilters, setShowFilters] = useState<boolean>(false);
+  const [showCategoriesDialog, setShowCategoriesDialog] =
+    useState<boolean>(false);
+  const [deleteEventModalEvent, setDeleteEventModalEvent] = useState<
+    LifeEvent | undefined
+  >(undefined);
+  const [editEventModalEvent, setEditEventModalEvent] = useState<
+    LifeEvent | undefined
+  >(undefined);
 
   const value: DialogContextValue = {
     showImportDialog,
@@ -36,6 +54,14 @@ export const DialogContextProvider: React.FC<PropsWithChildren> = ({
     setShowAddEventDialog,
     showUserSettingsDialog,
     setShowUserSettingsDialog,
+    showFilters,
+    setShowFilters,
+    showCategoriesDialog,
+    setShowCategoriesDialog,
+    deleteEventModalEvent,
+    setDeleteEventModalEvent,
+    editEventModalEvent,
+    setEditEventModalEvent,
   };
 
   return (

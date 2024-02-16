@@ -33,4 +33,12 @@ describe("CategoryColor", () => {
       expect(firstRolledOverColor).toEqual(CategoryColorCodes[1]);
     });
   });
+
+  describe("toEmojiAndName", () => {
+    test("can extract the emoji and name from a category", () => {
+      const { emoji, name } = CategoryColor.toEmojiAndName("🌎Travel");
+      expect(emoji).toEqual("🌎");
+      expect(name).toEqual("Travel");
+    });
+  });
 });

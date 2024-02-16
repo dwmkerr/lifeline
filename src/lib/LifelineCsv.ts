@@ -1,6 +1,6 @@
 import { parse } from "csv-parse/sync";
 import { stringify } from "csv-stringify/sync";
-import { LifeEvent } from "./LifeEvent";
+import { LifeEvent, ecFromString } from "./LifeEvent";
 
 type ImportedLifeEvent = Omit<LifeEvent, "id" | "userId">;
 
@@ -85,6 +85,7 @@ export async function importCsv(
     }
     const title = record?.[options.columnMappings.title];
     const category = record?.[options.columnMappings.category];
+    const eventCategory = ecFromString(category);
     const year = Number.parseInt(yearStr);
     const month = record?.[options.columnMappings.month];
     const day = record?.[options.columnMappings.day];
@@ -95,7 +96,7 @@ export async function importCsv(
       year,
       month: month ? Number.parseInt(month) : null,
       day: day ? Number.parseInt(day) : null,
-      category,
+      category: eventCategory,
       title,
       notes,
       minor: minor === "true",

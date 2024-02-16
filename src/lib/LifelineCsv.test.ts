@@ -37,8 +37,8 @@ describe("LifelineCsv", () => {
 
     test("can import a basic CSV file", async () => {
       const csv = `Year,Month,Day,Age,Category,Title,Notes,Minor,,,,,,,,,,,,,,,,,,,,,
-1985,1,,,,"Belfast",,,,,,,,,,,,,,,,,,,,,,,
-1987,2,,,,Colchester,,,,,,,,,,,,,,,,,,,,,,,
+1985,1,,,😶Life,"Belfast",,,,,,,,,,,,,,,,,,,,,,,
+1987,2,,,😶Life,Colchester,,,,,,,,,,,,,,,,,,,,,,,
 `;
       const { warnings, lifeEvents } = await importCsv(csv, defaultOptions);
       expect(warnings).toMatchObject([]);
@@ -47,6 +47,10 @@ describe("LifelineCsv", () => {
           year: 1985,
           month: 1,
           title: "Belfast",
+          category: {
+            emoji: "😶",
+            name: "Life",
+          },
           notes: "",
           minor: false,
         },
@@ -54,6 +58,10 @@ describe("LifelineCsv", () => {
           year: 1987,
           month: 2,
           title: "Colchester",
+          category: {
+            emoji: "😶",
+            name: "Life",
+          },
           notes: "",
           minor: false,
         },
@@ -112,7 +120,10 @@ describe("LifelineCsv", () => {
           month: 1,
           day: null,
           title: "Belfast",
-          category: "Life",
+          category: {
+            emoji: "😶",
+            name: "Life",
+          },
           notes: null,
           minor: false,
         },
@@ -121,7 +132,10 @@ describe("LifelineCsv", () => {
           month: 2,
           day: null,
           title: "Colchester",
-          category: "Life",
+          category: {
+            emoji: "😶",
+            name: "Life",
+          },
           notes: null,
           minor: true,
         },

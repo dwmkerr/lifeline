@@ -1,7 +1,50 @@
+export type EventCategory = {
+  emoji: string;
+  name: string;
+};
+
+export function ecFromString(category: string) {
+  const emojiRex = /(\p{Emoji})\s*(.*)/gu;
+  const matches = category.matchAll(emojiRex);
+  for (const match of matches) {
+    console.log(match);
+    return {
+      emoji: match[1] || "",
+      name: match[2] || "",
+    };
+  }
+
+  return { emoji: "", name: category };
+}
+
+export function ecToString(eventCategory: EventCategory) {
+  return `${eventCategory.emoji !== "" ? `${eventCategory.emoji} ` : ""}${eventCategory.name}`;
+}
+
+export function ecUnique(eventCategories: EventCategory[]) {
+  const categories = eventCategories.map(ecToString);
+  const uniqueCategories = [...new Set(categories)];
+  return uniqueCategories.map(ecFromString);
+}
+
+export function ecContains(
+  eventCategories: EventCategory[],
+  eventCategory: EventCategory,
+) {
+  return (
+    eventCategories.find(
+      (ec) =>
+        ec.emoji === eventCategory.emoji && ec.name === eventCategory.name,
+    ) !== undefined
+  );
+}
+
+export const ecEmpty = { emoji: "", name: "" };
+
 export interface LifeEvent {
   userId: string;
   id: string;
-  category: string;
+  category: EventCategory;
   title: string;
   year: number;
   month: number | null;
@@ -25,6 +68,7 @@ export interface SerializableLifeEvent {
 export function toSerializableObject(event: LifeEvent): SerializableLifeEvent {
   return {
     ...event,
+    category: `${event.category.emoji}${event.category.name}`,
   };
 }
 
@@ -41,13 +85,14 @@ export type MinimumSerializableLifeEvent = AtLeast<
 export function fromSerializableObject(
   object: MinimumSerializableLifeEvent,
 ): LifeEvent {
+  const eventCategory = ecFromString(object.category || "");
   //  Note that as well as deserializing, this code is also handling the logic
   //  for fields which might not be stored (for example fields which have been
   //  added to the extension since the puzzle was initially logged). This is
   //  also covered in the unit tests.
   return {
     ...object,
-    category: object.category || "",
+    category: eventCategory,
     month: object.month || null,
     day: object.day || null,
     notes: object.notes || null,

@@ -14,6 +14,7 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import GoogleIcon from "@mui/icons-material/Google";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import ChecklistIcon from "@mui/icons-material/Checklist";
 
 import { LifelineRepository } from "../lib/LifelifeRepository";
 import { LifelineError } from "../lib/Errors";
@@ -91,6 +92,7 @@ export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
     setShowImportDialog,
     setShowExportDialog,
     setShowUserSettingsDialog,
+    setShowCategoriesDialog,
   } = useDialogContext();
 
   return (
@@ -137,6 +139,10 @@ export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
         <MenuItem disabled={true}>
           <SettingsRoundedIcon />
           Settings
+        </MenuItem>
+        <MenuItem onClick={() => setShowCategoriesDialog(true)}>
+          <ChecklistIcon />
+          Categories
         </MenuItem>
         <MenuItem disabled={!user} onClick={() => repository.signOut()}>
           <LogoutRoundedIcon />
