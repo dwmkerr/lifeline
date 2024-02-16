@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/dwmkerr/lifeline/compare/v2.3.0...v2.4.0) (2024-02-14)
+
+
+### Features
+
+* user settings dialog ([#21](https://github.com/dwmkerr/lifeline/issues/21)) ([7827132](https://github.com/dwmkerr/lifeline/commit/782713265dee485d420e66e9582e23b8b3a84b7c))
+
 ## [2.3.0](https://github.com/dwmkerr/lifeline/compare/v2.2.0...v2.3.0) (2024-02-13)
 
 
