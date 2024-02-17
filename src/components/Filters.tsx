@@ -12,17 +12,18 @@ import Stack from "@mui/joy/Stack";
 import { IconButton, Link, ListItemDecorator, Typography } from "@mui/joy";
 
 import ClearIcon from "@mui/icons-material/Clear";
-import CircleIcon from "@mui/icons-material/Circle";
 
 import { useDialogContext } from "./DialogContext";
 import {
   EventCategory,
   LifeEvent,
   ecContains,
+  ecEquals,
   ecToString,
   ecUnique,
 } from "../lib/LifeEvent";
 import { useRef } from "react";
+import Emoji from "./Emoji";
 
 export type FilterSettings = {
   selectedCategories: EventCategory[];
@@ -243,22 +244,17 @@ export default function Filters(props: FiltersProps) {
                   props.filterSettings.selectedCategories,
                   category,
                 );
-                const color = selected
-                  ? category
-                    ? props.categoryColors[category.name]
-                    : "#cecece"
-                  : "#cecece";
                 return (
                   <ListItem key={ecToString(category)}>
-                    <ListItemDecorator>
-                      <CircleIcon
-                        fontSize="small"
-                        sx={{
-                          zIndex: 2,
-                          pointerEvents: "none",
-                          color: color,
-                        }}
-                      />
+                    <ListItemDecorator
+                      sx={{
+                        zIndex: 2,
+                        pointerEvents: "none",
+                      }}
+                    >
+                      <Typography sx={{ mr: "auto" }}>
+                        <Emoji emoji={category.emoji} />
+                      </Typography>
                     </ListItemDecorator>
                     <Checkbox
                       size="sm"
@@ -276,7 +272,7 @@ export default function Filters(props: FiltersProps) {
                             ])
                           : ecUnique(
                               props.filterSettings.selectedCategories.filter(
-                                (sc) => sc !== category,
+                                (sc) => !ecEquals(sc, category),
                               ),
                             );
                         props.onChangeFilterSettings({

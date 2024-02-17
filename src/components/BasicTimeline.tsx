@@ -16,7 +16,6 @@ import EventTimelineDot, {
 interface BasicTimelineProps {
   lifeEvents: LifeEvent[];
   categoryColors: Record<string, string>;
-  onEditEvent: (event: LifeEvent) => void;
   showAgeDOB?: Date;
 }
 

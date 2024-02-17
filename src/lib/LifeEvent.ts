@@ -27,6 +27,10 @@ export function ecUnique(eventCategories: EventCategory[]) {
   return uniqueCategories.map(ecFromString);
 }
 
+export function ecEquals(lhs: EventCategory, rhs: EventCategory) {
+  return lhs.emoji === rhs.emoji && lhs.name === rhs.name;
+}
+
 export function ecContains(
   eventCategories: EventCategory[],
   eventCategory: EventCategory,

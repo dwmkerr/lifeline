@@ -27,15 +27,7 @@ import AddEditEventModal, {
 import { AlertSnackbar } from "./components/AlertSnackbar";
 import { LifelineRepository } from "./lib/LifelifeRepository";
 import { useEffect, useState } from "react";
-import {
-  LifeEvent,
-  EventCategory,
-  ecToString,
-  ecFromString,
-  ecEmpty,
-  ecUnique,
-  ecContains,
-} from "./lib/LifeEvent";
+import { LifeEvent, EventCategory, ecEmpty, ecUnique } from "./lib/LifeEvent";
 import { CategoryColor } from "./lib/CategoryColor";
 import ImportEventsDialog from "./components/ImportEventsDialog";
 import ExportEventsDialog from "./components/ExportEventsDialog";
@@ -83,8 +75,6 @@ const AppContainer = () => {
   const [categoryColors, setCategoryColors] = useState<Record<string, string>>(
     {},
   );
-  const [editEventModalOpen, setEditEventModalOpen] = useState(false);
-  const [editEvent, setEditEvent] = useState<LifeEvent | null>(null);
 
   //  On mount, wait for the current user (if any). This waits for firebase
   //  to load based on any cached credentials.
@@ -179,10 +169,6 @@ const AppContainer = () => {
           <BasicTimeline
             lifeEvents={filteredLifeEvents}
             categoryColors={categoryColors}
-            onEditEvent={(event) => {
-              setEditEvent(event);
-              setEditEventModalOpen(true);
-            }}
             showAgeDOB={
               userSettings?.showAgeOnTimeline && userSettings.dateOfBirth
                 ? userSettings.dateOfBirth

@@ -38,10 +38,6 @@ export default function CategorySelect(props: CategorySelectProps) {
   const [name, setName] = useState(props.category.name);
   const [emojiPickerOpen, setEmojiPickerOpen] = useState<boolean>(false);
   const [categories, setCategories] = useState(props.categories);
-  const [editingCategory, setEditingCategory] = useState<EventCategory>({
-    emoji: "",
-    name: "",
-  });
   const [selectedCategory, setSelectedCategory] = useState<EventCategory>(
     props.categories.find(
       (ec) =>
@@ -138,9 +134,6 @@ export default function CategorySelect(props: CategorySelectProps) {
         onEmojiClick={(newEmoji) => {
           setEmoji(newEmoji.emoji);
           setEmojiPickerOpen(false);
-
-          //  Updating the currently editing category.
-          setEditingCategory({ emoji: newEmoji.emoji, name });
         }}
       />
       <Autocomplete
@@ -167,7 +160,6 @@ export default function CategorySelect(props: CategorySelectProps) {
           //  Updating the currently editing category.
           //  Set the name and categories.
           console.log("onInputChange", value);
-          setEditingCategory({ emoji: emoji, name: value });
           setName(value);
           setSelectedCategory({ emoji, name: value });
         }}
