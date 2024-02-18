@@ -99,16 +99,20 @@ Quick and dirty task list:
 - [x] bug: add events resets filters (e.g. category)
 - [ ] bug: cannot key in a category in add/edit event
 
-- [ ] feat: filters button on navbar, side drawer without overlay / close panel icon
-- [ ] feat: welcome page
+**Demoable**
+
+- [x] feat: welcome page
+- [x] feat: on start, show welcome screen if not logged in
+- [x] feat: loading spinner
+- [ ] feat: show warning to regularly export events
+- [ ] feat: use cloud firestore rather than local
+- [ ] build: deploy firebase rules on build
 - [ ] feat: consider moving search and filters into a filters context so it can be set from anywhere, e.g. on a dropdown from the life events letting you filter to similar events
+- [ ] feat: filters button on navbar, side drawer without overlay / close panel icon
 
 - [ ] bug: hard bug - category selection in the filters should be preserved when adding/deleting/changing events, first try caused them all to blank out, next try didn't pick up new ones, etc
 
 - [ ] minor bug: prevent focus for emoji picker?
-
-- [ ] feat: loading spinner
-- [ ] feat: on start, show welcome screen if not logged in
 
 ### Epic - Demo lifelines
 

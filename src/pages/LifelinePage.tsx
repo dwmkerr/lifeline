@@ -23,6 +23,7 @@ import CategoriesModal from "../components/CategoriesModal";
 import { UserSettings } from "../lib/UserSettings";
 import TimelineHeader from "../components/TimelineHeader";
 import DeleteEventModal from "../components/DeleteEventModal";
+import { CircularProgress } from "@mui/joy";
 
 export default function LifelinePage() {
   const repository = LifelineRepository.getInstance();
@@ -46,6 +47,7 @@ export default function LifelinePage() {
   const [userSettings] = useState<UserSettings | null>(null);
   const [lifeEvents, setLifeEvents] = useState<LifeEvent[]>([]);
   const [filteredLifeEvents, setFilteredLifeEvents] = useState<LifeEvent[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [filterSettings, setFilterSettings] = useState<FilterSettings>({
     selectedCategories: [],
     includeMinor: true,
@@ -62,6 +64,7 @@ export default function LifelinePage() {
   useEffect(() => {
     const unsubscribe = repository.subscribeToLifeEvents((lifeEvents) => {
       setLifeEvents(lifeEvents);
+      setLoading(false);
     }, sortDirection);
     return unsubscribe;
   }, [sortDirection]);
@@ -130,15 +133,30 @@ export default function LifelinePage() {
               categoryColors={categoryColors}
             />
           </Stack>
-          <BasicTimeline
-            lifeEvents={filteredLifeEvents}
-            categoryColors={categoryColors}
-            showAgeDOB={
-              userSettings?.showAgeOnTimeline && userSettings.dateOfBirth
-                ? userSettings.dateOfBirth
-                : undefined
-            }
-          />
+          {loading ? (
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              spacing={2}
+              sx={{
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <CircularProgress />
+            </Stack>
+          ) : (
+            <BasicTimeline
+              lifeEvents={filteredLifeEvents}
+              categoryColors={categoryColors}
+              showAgeDOB={
+                userSettings?.showAgeOnTimeline && userSettings.dateOfBirth
+                  ? userSettings.dateOfBirth
+                  : undefined
+              }
+            />
+          )}
           <Pagination />
           {alertInfo && (
             <AlertSnackbar
