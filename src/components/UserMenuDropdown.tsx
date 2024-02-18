@@ -15,11 +15,13 @@ import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import GoogleIcon from "@mui/icons-material/Google";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ChecklistIcon from "@mui/icons-material/Checklist";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import { LifelineRepository } from "../lib/LifelineRepository";
 import { LifelineError } from "../lib/Errors";
 import { useDialogContext } from "./DialogContext";
 import { useAlertContext } from "./AlertContext";
+import pkg from "../../package.json";
 
 function UserInfo({ user }: { user: User | undefined }) {
   //  Work out the user name and info.
@@ -147,6 +149,11 @@ export default function UserMenuDropdown({ user }: UserMenuDropdownProps) {
         <MenuItem disabled={!user} onClick={() => repository.signOut()}>
           <LogoutRoundedIcon />
           Log out
+        </MenuItem>
+        <ListDivider />
+        <MenuItem disabled>
+          <InfoOutlinedIcon />
+          Lifeline Version {pkg.version}
         </MenuItem>
       </Menu>
     </Dropdown>
