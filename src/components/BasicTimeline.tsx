@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react";
 import Timeline from "@mui/lab/Timeline";
 import TimelineItem from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
@@ -12,6 +13,7 @@ import { calculateAge } from "../lib/calculate-age";
 import EventTimelineDot, {
   EventTimelineDotVariant,
 } from "./timeline/EventTimelineDot";
+import { AlertType, useAlertContext } from "./AlertContext";
 
 interface BasicTimelineProps {
   lifeEvents: LifeEvent[];
@@ -20,6 +22,16 @@ interface BasicTimelineProps {
 }
 
 export default function BasicTimeline(props: BasicTimelineProps) {
+  const { setAlertInfo } = useAlertContext();
+
+  useEffect(() => {
+    setAlertInfo({
+      type: AlertType.Warning,
+      title: "Don't Forget to Backup",
+      message:
+        "Lifeline is still in development. To avoid losing your work, regularly use the 'Export' option to back up your life events to CSV.",
+    });
+  }, []);
   const age = (event: LifeEvent, dob: Date): string => {
     const eventDate = new Date(
       event.year,
