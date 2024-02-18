@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.6.0](https://github.com/dwmkerr/lifeline/compare/v2.5.0...v2.6.0) (2024-02-18)
+
+
+### Features
+
+* share feedback ([4f2f574](https://github.com/dwmkerr/lifeline/commit/4f2f57420f0f5bdcb95c1bee89a2f68c2ab5a290))
+* show version in user menu ([0733561](https://github.com/dwmkerr/lifeline/commit/07335611b5b4e47d5f911f09204e4dbc5c9664e6))
+
 ## [2.5.0](https://github.com/dwmkerr/lifeline/compare/v2.4.0...v2.5.0) (2024-02-18)
 
 
