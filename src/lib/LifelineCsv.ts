@@ -1,6 +1,6 @@
 import { parse } from "csv-parse/sync";
 import { stringify } from "csv-stringify/sync";
-import { LifeEvent, ecFromString } from "./LifeEvent";
+import { LifeEvent, ecFromString, ecToString } from "./LifeEvent";
 
 type ImportedLifeEvent = Omit<LifeEvent, "id" | "userId">;
 
@@ -136,7 +136,7 @@ export async function exportCsv(
   ];
   const rows = events.map((event) => [
     event.title,
-    event.category,
+    ecToString(event.category),
     event.year,
     event.month,
     event.day,

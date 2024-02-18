@@ -18,6 +18,7 @@ export interface CategorySelectProps {
   category: EventCategory;
   onChange?: (category: EventCategory) => void;
   categories: EventCategory[];
+  showEditOption?: boolean;
 }
 
 export const EmojiButton = ({
@@ -27,7 +28,11 @@ export const EmojiButton = ({
   emoji: string;
   onClick: () => void;
 }) => (
-  <IconButton variant="plain" color="neutral" onClick={onClick}>
+  <IconButton
+    variant={emoji === "" ? "soft" : "plain"}
+    color="neutral"
+    onClick={onClick}
+  >
     <Emoji emoji={emoji} />
   </IconButton>
 );
@@ -141,12 +146,14 @@ export default function CategorySelect(props: CategorySelectProps) {
           <EmojiButton emoji={emoji} onClick={() => setEmojiPickerOpen(true)} />
         }
         endDecorator={
-          <IconButton
-            variant="plain"
-            onClick={() => setShowCategoriesDialog(true)}
-          >
-            <EditNoteIcon />
-          </IconButton>
+          props.showEditOption === true && (
+            <IconButton
+              variant="plain"
+              onClick={() => setShowCategoriesDialog(true)}
+            >
+              <EditNoteIcon />
+            </IconButton>
+          )
         }
         value={selectedCategory}
         options={categories}
