@@ -21,15 +21,10 @@ import ExportEventsDialog from "../components/ExportEventsDialog";
 import UserSettingsModal from "../components/UserSettingsModal";
 import CategoriesModal from "../components/CategoriesModal";
 import { UserSettings } from "../lib/UserSettings";
-import { User } from "firebase/auth";
 import TimelineHeader from "../components/TimelineHeader";
 import DeleteEventModal from "../components/DeleteEventModal";
 
-export interface LifelinePageProps {
-  user: User;
-}
-
-export default function LifelinePage(props: LifelinePageProps) {
+export default function LifelinePage() {
   const repository = LifelineRepository.getInstance();
   const { alertInfo, setAlertInfo } = useAlertContext();
   const {
@@ -48,7 +43,7 @@ export default function LifelinePage(props: LifelinePageProps) {
     editEventModalEvent,
     setEditEventModalEvent,
   } = useDialogContext();
-  const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
+  const [userSettings] = useState<UserSettings | null>(null);
   const [lifeEvents, setLifeEvents] = useState<LifeEvent[]>([]);
   const [filteredLifeEvents, setFilteredLifeEvents] = useState<LifeEvent[]>([]);
   const [filterSettings, setFilterSettings] = useState<FilterSettings>({
