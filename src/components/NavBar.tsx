@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Box, IconButton, Input } from "@mui/joy";
+import { Box, Button, IconButton, Input } from "@mui/joy";
 import Typography from "@mui/joy/Typography";
 
 import TuneIcon from "@mui/icons-material/TuneRounded";
 import ClearIcon from "@mui/icons-material/Clear";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 
 import UserMenuDropdown from "./UserMenuDropdown";
 import { LifelineRepository } from "../lib/LifelineRepository";
@@ -18,7 +19,8 @@ export interface NavBarProps {
 
 export default function NavBar(props: NavBarProps) {
   const repository = LifelineRepository.getInstance();
-  const { showFilters, setShowFilters } = useDialogContext();
+  const { showFilters, setShowFilters, setShowFeedbackDialog } =
+    useDialogContext();
   const [user, setUser] = useState<User | null>(repository.getUser() || null);
 
   useEffect(() => {
@@ -103,6 +105,12 @@ export default function NavBar(props: NavBarProps) {
             width: "480px",
           }}
         />
+        <Button
+          startDecorator={<LightbulbOutlinedIcon />}
+          onClick={() => setShowFeedbackDialog(true)}
+        >
+          Share Feedback
+        </Button>
         <UserMenuDropdown user={user || undefined} />
       </Box>
     </Box>

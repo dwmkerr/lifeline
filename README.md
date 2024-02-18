@@ -36,7 +36,6 @@ Use the [Firebase Local Emulator Suite](https://firebase.google.com/docs/emulato
 Setup looks like this:
 
 ```bash
-
 # Install firebase CLI tools, then login.
 curl -sL firebase.tools | bash
 firebase login
@@ -129,13 +128,15 @@ Quick and dirty task list:
 - [x] feat: on start, show welcome screen if not logged in
 - [x] feat: loading spinner
 - [x] feat: show warning to regularly export events
-- [ ] feat: use cloud firestore rather than local
-- [ ] build: deploy firebase rules on build
+- [x] feat: use cloud firestore rather than local
+- [x] feat: feedback option
+- [ ] feat: show version number in menu
+
+**v0.3**
+
 - [ ] feat: watch for firestore errors, test with new site
 - [ ] feat: consider moving search and filters into a filters context so it can be set from anywhere, e.g. on a dropdown from the life events letting you filter to similar events
 - [ ] feat: filters button on navbar, side drawer without overlay / close panel icon
-- [ ] feat: feedback option
-- [ ] feat: show version number in menu
 
 - [ ] bug: hard bug - category selection in the filters should be preserved when adding/deleting/changing events, first try caused them all to blank out, next try didn't pick up new ones, etc
 

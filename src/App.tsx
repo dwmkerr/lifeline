@@ -62,7 +62,7 @@ export default function App() {
                 <CircularProgress />
               </Stack>
             ) : user ? (
-              <LifelinePage />
+              <LifelinePage user={user} />
             ) : (
               <WelcomePage />
             )}

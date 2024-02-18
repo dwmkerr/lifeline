@@ -51,7 +51,7 @@ export default function AddEditEventModal(props: AddEditEventModalProps) {
     }, 100);
   }, []);
 
-  const submit = () => {
+  const submit = async () => {
     if (year === null) {
       setAlertFromError(
         new LifelineError(
@@ -63,7 +63,7 @@ export default function AddEditEventModal(props: AddEditEventModalProps) {
     }
     if (props.mode === AddEditEventMode.Add) {
       try {
-        repository.create({
+        await repository.create({
           title,
           category,
           year,
@@ -86,7 +86,7 @@ export default function AddEditEventModal(props: AddEditEventModalProps) {
         return;
       }
       try {
-        repository.save({
+        await repository.save({
           ...props.event,
           title,
           category,

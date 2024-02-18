@@ -23,6 +23,8 @@ interface DialogContextValue {
   setDeleteEventModalEvent: (event?: LifeEvent) => void;
   editEventModalEvent?: LifeEvent;
   setEditEventModalEvent: (event?: LifeEvent) => void;
+  showFeedbackDialog: boolean;
+  setShowFeedbackDialog: (show: boolean) => void;
 }
 
 const DialogContext = createContext<DialogContextValue | null>(null);
@@ -44,6 +46,7 @@ export const DialogContextProvider: React.FC<PropsWithChildren> = ({
   const [editEventModalEvent, setEditEventModalEvent] = useState<
     LifeEvent | undefined
   >(undefined);
+  const [showFeedbackDialog, setShowFeedbackDialog] = useState<boolean>(false);
 
   const value: DialogContextValue = {
     showImportDialog,
@@ -62,6 +65,8 @@ export const DialogContextProvider: React.FC<PropsWithChildren> = ({
     setDeleteEventModalEvent,
     editEventModalEvent,
     setEditEventModalEvent,
+    showFeedbackDialog,
+    setShowFeedbackDialog,
   };
 
   return (

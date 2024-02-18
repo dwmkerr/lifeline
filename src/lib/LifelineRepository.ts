@@ -6,6 +6,7 @@ import {
   Firestore,
   getDoc,
   Timestamp,
+  addDoc,
 } from "firebase/firestore";
 import {
   collection,
@@ -32,6 +33,7 @@ import {
 import { GoogleAuthProvider, Unsubscribe, User } from "firebase/auth";
 import { LifelineError } from "./Errors";
 import { SerializableUserSettings, UserSettings } from "./UserSettings";
+import { Feedback } from "./Feedback";
 
 const lifeEventConverter = {
   toFirestore(lifeEvent: WithFieldValue<LifeEvent>): SerializableLifeEvent {
@@ -67,6 +69,23 @@ const userSettingsConverter = {
     };
   },
 };
+const feedbackConverter = {
+  toFirestore(feedback: WithFieldValue<Feedback>): Feedback {
+    const feedbackData = feedback as Feedback;
+    return {
+      ...feedbackData,
+    } as Feedback;
+  },
+  fromFirestore(
+    snapshot: QueryDocumentSnapshot,
+    options: SnapshotOptions,
+  ): Feedback {
+    const data = snapshot.data(options) as Feedback;
+    return {
+      ...data,
+    };
+  },
+};
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -94,6 +113,7 @@ export class LifelineRepository {
     UserSettings,
     SerializableUserSettings
   >;
+  private feedbackCollection: CollectionReference<Feedback, Feedback>;
 
   private constructor(emulator: boolean) {
     this.app = initializeApp(firebaseConfig);
@@ -109,6 +129,9 @@ export class LifelineRepository {
       this.db,
       "userSettings",
     ).withConverter(userSettingsConverter);
+    this.feedbackCollection = collection(this.db, "feedback").withConverter(
+      feedbackConverter,
+    );
   }
 
   public static getInstance(): LifelineRepository {
@@ -277,6 +300,13 @@ export class LifelineRepository {
       doc(this.userSettingsCollection, userSettings.userId),
       userSettings,
     );
+  }
+
+  async saveFeedback(feedback: Omit<Feedback, "userId">): Promise<void> {
+    await addDoc(this.feedbackCollection, {
+      ...feedback,
+      userId: this.getUser()?.uid,
+    });
   }
 
   getAuth(): Auth {

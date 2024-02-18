@@ -24,8 +24,14 @@ import TimelineHeader from "../components/TimelineHeader";
 import DeleteEventModal from "../components/DeleteEventModal";
 import { CircularProgress } from "@mui/joy";
 import { LifelineError } from "../lib/Errors";
+import FeedbackModal from "../components/FeedbackModal";
+import { User } from "firebase/auth";
 
-export default function LifelinePage() {
+export interface LifelinePageProps {
+  user: Pick<User, "email">;
+}
+
+export default function LifelinePage(props: LifelinePageProps) {
   const repository = LifelineRepository.getInstance();
   const { alertInfo, setAlertInfo, setAlertFromError } = useAlertContext();
   const {
@@ -43,6 +49,8 @@ export default function LifelinePage() {
     setDeleteEventModalEvent,
     editEventModalEvent,
     setEditEventModalEvent,
+    showFeedbackDialog,
+    setShowFeedbackDialog,
   } = useDialogContext();
   const [userSettings] = useState<UserSettings | null>(null);
   const [lifeEvents, setLifeEvents] = useState<LifeEvent[]>([]);
@@ -199,6 +207,12 @@ export default function LifelinePage() {
             <CategoriesModal
               categories={categories}
               onClose={() => setShowCategoriesDialog(false)}
+            />
+          )}
+          {showFeedbackDialog && (
+            <FeedbackModal
+              email={props.user.email || undefined}
+              onClose={() => setShowFeedbackDialog(false)}
             />
           )}
           {deleteEventModalEvent !== undefined && (
