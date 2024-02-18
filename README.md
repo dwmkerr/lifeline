@@ -110,6 +110,10 @@ Quick and dirty task list:
 - [ ] feat: loading spinner
 - [ ] feat: on start, show welcome screen if not logged in
 
+### Epic - Demo lifelines
+
+On new user sign up show a demo lifeline and add a user setting 'demo', when this setting is on offer an alert on startup showing it is a demo with the option to remove all values.
+
 ### Epic - Manage Categories
 
 - [ ] feat: suggest categories in drop down list for new events

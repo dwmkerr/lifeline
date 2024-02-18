@@ -105,7 +105,7 @@ function Hero() {
   return (
     <TwoSidedLayout>
       <Typography color="primary" fontSize="lg" fontWeight="lg">
-        Learn from your Life
+        Welcome to Lifeline
       </Typography>
       <Typography
         level="h1"

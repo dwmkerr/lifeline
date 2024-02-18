@@ -56,7 +56,6 @@ export abstract class CategoryColor {
     const emojiRex = /(\p{Emoji})(.*)/gu;
     const matches = category.matchAll(emojiRex);
     for (const match of matches) {
-      console.log(match);
       return {
         emoji: match[1] || "",
         name: match[2] || "",
