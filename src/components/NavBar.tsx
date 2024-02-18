@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { Box, IconButton, Input } from "@mui/joy";
 import Typography from "@mui/joy/Typography";
 
-import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
+import TuneIcon from "@mui/icons-material/TuneRounded";
 import ClearIcon from "@mui/icons-material/Clear";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 import UserMenuDropdown from "./UserMenuDropdown";
 import { LifelineRepository } from "../lib/LifelifeRepository";
 import { User, onAuthStateChanged } from "firebase/auth";
+import { useDialogContext } from "./DialogContext";
 
 export interface NavBarProps {
   searchText: string;
@@ -17,6 +18,7 @@ export interface NavBarProps {
 
 export default function NavBar(props: NavBarProps) {
   const repository = LifelineRepository.getInstance();
+  const { showFilters, setShowFilters } = useDialogContext();
   const [user, setUser] = useState<User | null>(repository.getUser() || null);
 
   useEffect(() => {
@@ -52,8 +54,12 @@ export default function NavBar(props: NavBarProps) {
           gap: 1.5,
         }}
       >
-        <IconButton size="sm" variant="soft">
-          <MapsHomeWorkIcon />
+        <IconButton
+          size="sm"
+          variant="soft"
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          <TuneIcon />
         </IconButton>
         <Typography component="h1" fontWeight="xl">
           Lifeline

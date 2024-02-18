@@ -228,10 +228,9 @@ export class LifelineRepository {
     await Promise.all(promises);
   }
 
-  async backup(): Promise<SerializableLifeEvent[]> {
+  async backup(): Promise<LifeEvent[]> {
     const lifeEvents = await this.load();
-    const records = lifeEvents.map(toSerializableObject);
-    return records;
+    return lifeEvents;
   }
 
   async getUserSettings(): Promise<UserSettings> {

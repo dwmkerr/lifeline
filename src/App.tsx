@@ -19,7 +19,7 @@ import {
 } from "./components/DialogContext";
 import BasicTimeline from "./components/BasicTimeline";
 import NavBar from "./components/NavBar";
-import Filters, { FilterSettings } from "./components/Filters";
+import Filters, { FilterSettings, applyFilters } from "./components/Filters";
 import Pagination from "./components/Pagination";
 import AddEditEventModal, {
   AddEditEventMode,
@@ -27,13 +27,16 @@ import AddEditEventModal, {
 import { AlertSnackbar } from "./components/AlertSnackbar";
 import { LifelineRepository } from "./lib/LifelifeRepository";
 import { useEffect, useState } from "react";
-import { LifeEvent } from "./lib/LifeEvent";
+import { LifeEvent, EventCategory, ecEmpty, ecUnique } from "./lib/LifeEvent";
 import { CategoryColor } from "./lib/CategoryColor";
 import ImportEventsDialog from "./components/ImportEventsDialog";
 import ExportEventsDialog from "./components/ExportEventsDialog";
 import UserSettingsModal from "./components/UserSettingsModal";
+import CategoriesModal from "./components/CategoriesModal";
 import { UserSettings } from "./lib/UserSettings";
 import { User } from "firebase/auth";
+import TimelineHeader from "./components/TimelineHeader";
+import DeleteEventModal from "./components/DeleteEventModal";
 
 const materialTheme = materialExtendTheme();
 
@@ -49,6 +52,12 @@ const AppContainer = () => {
     setShowAddEventDialog,
     showUserSettingsDialog,
     setShowUserSettingsDialog,
+    showCategoriesDialog,
+    setShowCategoriesDialog,
+    deleteEventModalEvent,
+    setDeleteEventModalEvent,
+    editEventModalEvent,
+    setEditEventModalEvent,
   } = useDialogContext();
   const [user, setUser] = useState<User | null>(null);
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
@@ -62,12 +71,10 @@ const AppContainer = () => {
   });
   const [searchText, setSearchText] = useState<string>("");
   const [sortDirection, setSortDirection] = useState<OrderByDirection>("asc");
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<EventCategory[]>([]);
   const [categoryColors, setCategoryColors] = useState<Record<string, string>>(
     {},
   );
-  const [editEventModalOpen, setEditEventModalOpen] = useState(false);
-  const [editEvent, setEditEvent] = useState<LifeEvent | null>(null);
 
   //  On mount, wait for the current user (if any). This waits for firebase
   //  to load based on any cached credentials.
@@ -96,53 +103,45 @@ const AppContainer = () => {
   }, [sortDirection]);
 
   useEffect(() => {
+    if (lifeEvents.length === 0) {
+      return;
+    }
+
+    //  If we have any events, we'll build our category list.
     const allCategories = lifeEvents.map((le) => le.category);
-    const validCategories = allCategories.filter(
-      (c) => c !== null && c !== "",
-    ) as string[];
-    const categories = ["", ...new Set(validCategories)];
-    setCategoryColors(CategoryColor.getColors(categories));
-    setCategories(categories);
+    const uniqueCategories = ecUnique(allCategories);
+    const categoryNames = categories.map((c) => c.name);
+    setCategoryColors(CategoryColor.getColors(categoryNames));
+    setCategories(uniqueCategories);
+
+    //  Short cut. For now, any changes to events resets the category filter.
     setFilterSettings({
       ...filterSettings,
-      selectedCategories: categories,
+      selectedCategories: [ecEmpty, ...uniqueCategories],
     });
+
+    //  Any newly added categories should be added to the selection. If we have
+    //  have no cateories, select them all.
+    // const newCategories = categories.filter(
+    //   (uc) => ecContains(categories, uc) === false,
+    // );
+    // setFilterSettings({
+    //   ...filterSettings,
+    //   selectedCategories:
+    //     filterSettings.selectedCategories.length === 0
+    //       ? [ecEmpty, ...uniqueCategories]
+    //       : ecUnique([
+    //           ecEmpty,
+    //           ...filterSettings.selectedCategories,
+    //           ...newCategories,
+    //         ]),
+    // });
   }, [lifeEvents]);
 
   //  Filter the events and apply the search.
   useEffect(() => {
-    const matchSearch = (val: string) =>
-      val.toLowerCase().indexOf(searchText.toLowerCase()) !== -1;
-    const filter = (event: LifeEvent): boolean => {
-      const eventDate = new Date(
-        event.year,
-        event.month ? event.month - 1 : 0,
-        event.day ? event.day : 1,
-      );
-      const categoryMatch =
-        filterSettings.selectedCategories.indexOf(event.category || "") !== -1;
-      const searchMatch =
-        searchText === "" ||
-        matchSearch(event.title) ||
-        matchSearch(event.notes || "");
-      const minorMatch = filterSettings.includeMinor || event.minor === false;
-      const matchStartDate = filterSettings.startDate
-        ? eventDate.getTime() >= filterSettings.startDate.getTime()
-        : true;
-      const matchEndDate = filterSettings.endDate
-        ? eventDate.getTime() <= filterSettings.endDate.getTime()
-        : true;
-      return (
-        categoryMatch &&
-        searchMatch &&
-        minorMatch &&
-        matchStartDate &&
-        matchEndDate
-      );
-    };
-
-    setFilteredLifeEvents(lifeEvents.filter(filter));
-  }, [searchText, filterSettings]);
+    setFilteredLifeEvents(applyFilters(lifeEvents, filterSettings, searchText));
+  }, [lifeEvents, searchText, filterSettings]);
 
   return (
     <React.Fragment>
@@ -156,13 +155,13 @@ const AppContainer = () => {
       >
         <Stack direction="column" alignItems="center" flexGrow={1}>
           <Stack spacing={2} sx={{ px: { xs: 2, md: 4 }, pt: 2, minHeight: 0 }}>
+            <TimelineHeader
+              sortDirection={sortDirection}
+              onSetSortDirection={setSortDirection}
+            />
             <Filters
               filterSettings={filterSettings}
               onChangeFilterSettings={setFilterSettings}
-              sortDirection={sortDirection}
-              onSetSortDirection={(sortDirection) =>
-                setSortDirection(sortDirection)
-              }
               categories={categories}
               categoryColors={categoryColors}
             />
@@ -170,10 +169,6 @@ const AppContainer = () => {
           <BasicTimeline
             lifeEvents={filteredLifeEvents}
             categoryColors={categoryColors}
-            onEditEvent={(event) => {
-              setEditEvent(event);
-              setEditEventModalOpen(true);
-            }}
             showAgeDOB={
               userSettings?.showAgeOnTimeline && userSettings.dateOfBirth
                 ? userSettings.dateOfBirth
@@ -187,15 +182,6 @@ const AppContainer = () => {
               onDismiss={() => setAlertInfo(null)}
             />
           )}
-          {editEventModalOpen && editEvent !== null && (
-            <AddEditEventModal
-              mode={AddEditEventMode.Edit}
-              open={editEventModalOpen}
-              event={editEvent}
-              cateories={categories}
-              onClose={() => setEditEventModalOpen(false)}
-            />
-          )}
           {showImportDialog && (
             <ImportEventsDialog onClose={() => setShowImportDialog(false)} />
           )}
@@ -205,15 +191,38 @@ const AppContainer = () => {
           {showAddEventDialog && (
             <AddEditEventModal
               mode={AddEditEventMode.Add}
-              open={showAddEventDialog}
               cateories={categories}
               onClose={() => setShowAddEventDialog(false)}
+            />
+          )}
+          {editEventModalEvent !== undefined && (
+            <AddEditEventModal
+              mode={AddEditEventMode.Edit}
+              event={editEventModalEvent}
+              cateories={categories}
+              onClose={() => setEditEventModalEvent(undefined)}
             />
           )}
           {showUserSettingsDialog && userSettings && (
             <UserSettingsModal
               userSettings={userSettings}
               onClose={() => setShowUserSettingsDialog(false)}
+            />
+          )}
+          {showCategoriesDialog && (
+            <CategoriesModal
+              categories={categories}
+              onClose={() => setShowCategoriesDialog(false)}
+            />
+          )}
+          {deleteEventModalEvent !== undefined && (
+            <DeleteEventModal
+              event={deleteEventModalEvent}
+              onCancel={() => setDeleteEventModalEvent(undefined)}
+              onDeleteEvent={(event) => {
+                repository.delete(event.id);
+                setDeleteEventModalEvent(undefined);
+              }}
             />
           )}
         </Stack>

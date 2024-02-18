@@ -9,11 +9,12 @@ import DialogTitle from "@mui/joy/DialogTitle";
 import DialogContent from "@mui/joy/DialogContent";
 import Stack from "@mui/joy/Stack";
 
-import { LifeEvent } from "../lib/LifeEvent";
-import { Autocomplete, Checkbox, Textarea } from "@mui/joy";
+import { LifeEvent, EventCategory } from "../lib/LifeEvent";
+import { Checkbox, Textarea } from "@mui/joy";
 import { LifelineRepository } from "../lib/LifelifeRepository";
 import { useAlertContext } from "./AlertContext";
 import { LifelineError } from "../lib/Errors";
+import CategorySelect from "./CategorySelect";
 
 export enum AddEditEventMode {
   Add,
@@ -22,9 +23,8 @@ export enum AddEditEventMode {
 
 interface AddEditEventModalProps {
   mode: AddEditEventMode;
-  open: boolean;
   event?: LifeEvent;
-  cateories: string[];
+  cateories: EventCategory[];
   onClose: (saved: boolean) => void;
 }
 
@@ -33,7 +33,9 @@ export default function AddEditEventModal(props: AddEditEventModalProps) {
   const { setAlertFromError } = useAlertContext();
 
   const [title, setTitle] = useState(props.event?.title || "");
-  const [category, setCategory] = useState(props.event?.category || "");
+  const [category, setCategory] = useState<EventCategory>(
+    props.event?.category || { emoji: "", name: "" },
+  );
   const [year, setYear] = useState(props.event?.year || null);
   const [month, setMonth] = useState(props.event?.month || null);
   const [day, setDay] = useState(props.event?.day || null);
@@ -100,7 +102,7 @@ export default function AddEditEventModal(props: AddEditEventModalProps) {
     }
   };
   return (
-    <Modal open={props.open} onClose={() => props.onClose(false)}>
+    <Modal open={true} onClose={() => props.onClose(false)}>
       <ModalDialog>
         <DialogTitle>
           {props.mode === AddEditEventMode.Add ? "Add Event" : "Edit Event"}
@@ -154,10 +156,13 @@ export default function AddEditEventModal(props: AddEditEventModalProps) {
             </Stack>
             <FormControl>
               <FormLabel>Category</FormLabel>
-              <Autocomplete
-                value={category || ""}
-                options={["", ...props.cateories]}
-                onChange={(e, value) => setCategory(value || "")}
+              <CategorySelect
+                category={category}
+                categories={props.cateories}
+                onChange={(category) => {
+                  setCategory(category);
+                  console.log("category", category);
+                }}
               />
             </FormControl>
             <FormControl>
