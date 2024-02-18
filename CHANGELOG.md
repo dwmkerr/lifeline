@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.5.0](https://github.com/dwmkerr/lifeline/compare/v2.4.0...v2.5.0) (2024-02-18)
+
+
+### Features
+
+* category emoji ([#24](https://github.com/dwmkerr/lifeline/issues/24)) ([c3ba9a5](https://github.com/dwmkerr/lifeline/commit/c3ba9a54223649834a40a0fc2d0713b342114abd))
+* loading spinner on timeline ([a80ce0b](https://github.com/dwmkerr/lifeline/commit/a80ce0b1a114c1de19c16511e8fce87cb7a94357))
+* welcome screen ([#26](https://github.com/dwmkerr/lifeline/issues/26)) ([9e29338](https://github.com/dwmkerr/lifeline/commit/9e29338e07e555bdabcfdc115cc7b51e25800dd7))
+
 ## [2.4.0](https://github.com/dwmkerr/lifeline/compare/v2.3.0...v2.4.0) (2024-02-14)
 
 
