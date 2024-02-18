@@ -93,23 +93,22 @@ Quick and dirty task list:
 - [x] feat: user settings (DOB, show age)
 - [x] feat: show age in timeline
 - [x] feat: filter by date, refactor into a filters object
-
 - [x] feat: emoji for categories
 - [x] feat: emoji in category dot
-
 - [x] feat: filters select all select none
 - [x] bug: add events resets filters (e.g. category)
 - [ ] bug: cannot key in a category in add/edit event
 
 - [ ] feat: filters button on navbar, side drawer without overlay / close panel icon
+- [ ] feat: welcome page
+- [ ] feat: consider moving search and filters into a filters context so it can be set from anywhere, e.g. on a dropdown from the life events letting you filter to similar events
 
 - [ ] bug: hard bug - category selection in the filters should be preserved when adding/deleting/changing events, first try caused them all to blank out, next try didn't pick up new ones, etc
 
-- [ ] feat: consider moving search and filters into a filters context so it can be set from anywhere, e.g. on a dropdown from the life events letting you filter to similar events
-
 - [ ] minor bug: prevent focus for emoji picker?
 
-
+- [ ] feat: loading spinner
+- [ ] feat: on start, show welcome screen if not logged in
 
 ### Epic - Manage Categories
 
