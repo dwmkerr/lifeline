@@ -11,7 +11,7 @@ import { User, onAuthStateChanged } from "@firebase/auth";
 import { AlertContextProvider } from "./components/AlertContext";
 import { DialogContextProvider } from "./components/DialogContext";
 import LifelinePage from "./pages/LifelinePage";
-import { LifelineRepository } from "./lib/LifelifeRepository";
+import { LifelineRepository } from "./lib/LifelineRepository";
 import { CircularProgress, Stack } from "@mui/joy";
 import WelcomePage from "./pages/WelcomePage";
 

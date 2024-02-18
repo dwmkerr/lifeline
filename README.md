@@ -4,7 +4,23 @@
 
 Visualise and track key life events with an interactive timeline.
 
-https://lifeline-dwmkerr.web.app/
+https://lifeline.rocks
+
+<!-- vim-markdown-toc GFM -->
+
+- [Developer Guide](#developer-guide)
+    - [Firebase](#firebase)
+- [Releasing](#releasing)
+- [Goals](#goals)
+- [Building the line](#building-the-line)
+- [TODO](#todo)
+    - [Epic - Demo lifelines](#epic---demo-lifelines)
+    - [Epic - Manage Categories](#epic---manage-categories)
+    - [Epic Import Preview](#epic-import-preview)
+    - [Events to add](#events-to-add)
+    - [Feedback](#feedback)
+
+<!-- vim-markdown-toc -->
 
 ## Developer Guide
 
@@ -37,6 +53,12 @@ firebase emulators:start
 open http://localhost:4000
 ```
 
+Deploy indexes and rules with:
+
+```bash
+fireabase deploy --only firestore
+```
+
 ## Releasing
 
 This project uses [Release Please](https://github.com/googleapis/release-please) to manage releases. As long as you use [Conventional Commit messages](https://www.conventionalcommits.org/en/v1.0.0/), release please will open up a 'release' pull request on the `main` branch when changes are merged. Merging the release pull request will trigger a full release to NPM.
@@ -44,6 +66,8 @@ This project uses [Release Please](https://github.com/googleapis/release-please)
 ```bash
 VERSION="0.1.0" git commit --allow-empty -m "chore: release ${VERSION}" -m "Release-As: ${VERSION}"
 ```
+
+Note that currently firestore configuration (security rules and indexes) is not deployed as part of this process, to avoid unexpected downtime while indexes rebuild. Manually deploy these changes as needed.
 
 ## Goals
 
@@ -104,11 +128,14 @@ Quick and dirty task list:
 - [x] feat: welcome page
 - [x] feat: on start, show welcome screen if not logged in
 - [x] feat: loading spinner
-- [ ] feat: show warning to regularly export events
+- [x] feat: show warning to regularly export events
 - [ ] feat: use cloud firestore rather than local
 - [ ] build: deploy firebase rules on build
+- [ ] feat: watch for firestore errors, test with new site
 - [ ] feat: consider moving search and filters into a filters context so it can be set from anywhere, e.g. on a dropdown from the life events letting you filter to similar events
 - [ ] feat: filters button on navbar, side drawer without overlay / close panel icon
+- [ ] feat: feedback option
+- [ ] feat: show version number in menu
 
 - [ ] bug: hard bug - category selection in the filters should be preserved when adding/deleting/changing events, first try caused them all to blank out, next try didn't pick up new ones, etc
 

@@ -14,7 +14,7 @@ import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import { AlertType, useAlertContext } from "./AlertContext";
 import { checkCsvContents, importCsv } from "../lib/LifelineCsv";
 import { Checkbox, DialogActions, Option, Select } from "@mui/joy";
-import { LifelineRepository } from "../lib/LifelifeRepository";
+import { LifelineRepository } from "../lib/LifelineRepository";
 import FileUploadButton from "./FileUploadButton";
 
 interface ImportEventsDialogProps {

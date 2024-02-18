@@ -7,12 +7,11 @@ import { useDialogContext } from "../components/DialogContext";
 import BasicTimeline from "../components/BasicTimeline";
 import NavBar from "../components/NavBar";
 import Filters, { FilterSettings, applyFilters } from "../components/Filters";
-import Pagination from "../components/Pagination";
 import AddEditEventModal, {
   AddEditEventMode,
 } from "../components/AddEditEventModal";
 import { AlertSnackbar } from "../components/AlertSnackbar";
-import { LifelineRepository } from "../lib/LifelifeRepository";
+import { LifelineRepository } from "../lib/LifelineRepository";
 import { useEffect, useState } from "react";
 import { LifeEvent, EventCategory, ecEmpty, ecUnique } from "../lib/LifeEvent";
 import { CategoryColor } from "../lib/CategoryColor";
@@ -24,10 +23,11 @@ import { UserSettings } from "../lib/UserSettings";
 import TimelineHeader from "../components/TimelineHeader";
 import DeleteEventModal from "../components/DeleteEventModal";
 import { CircularProgress } from "@mui/joy";
+import { LifelineError } from "../lib/Errors";
 
 export default function LifelinePage() {
   const repository = LifelineRepository.getInstance();
-  const { alertInfo, setAlertInfo } = useAlertContext();
+  const { alertInfo, setAlertInfo, setAlertFromError } = useAlertContext();
   const {
     showImportDialog,
     setShowImportDialog,
@@ -62,11 +62,16 @@ export default function LifelinePage() {
   );
 
   useEffect(() => {
-    const unsubscribe = repository.subscribeToLifeEvents((lifeEvents) => {
-      setLifeEvents(lifeEvents);
-      setLoading(false);
-    }, sortDirection);
-    return unsubscribe;
+    try {
+      const unsubscribe = repository.subscribeToLifeEvents((lifeEvents) => {
+        setLifeEvents(lifeEvents);
+        setLoading(false);
+      }, sortDirection);
+      return unsubscribe;
+    } catch (err) {
+      setAlertFromError(LifelineError.fromError("Load Events Error", err));
+      return () => undefined;
+    }
   }, [sortDirection]);
 
   useEffect(() => {
@@ -157,7 +162,6 @@ export default function LifelinePage() {
               }
             />
           )}
-          <Pagination />
           {alertInfo && (
             <AlertSnackbar
               alertInfo={alertInfo}

@@ -95,11 +95,13 @@ export class LifelineRepository {
     SerializableUserSettings
   >;
 
-  private constructor() {
+  private constructor(emulator: boolean) {
     this.app = initializeApp(firebaseConfig);
     this.auth = getAuth();
     this.db = getFirestore();
-    connectFirestoreEmulator(this.db, "127.0.0.1", 8080);
+    if (emulator) {
+      connectFirestoreEmulator(this.db, "127.0.0.1", 8080);
+    }
     this.lifeEventsCollection = collection(this.db, "lifeevents").withConverter(
       lifeEventConverter,
     );
@@ -111,7 +113,7 @@ export class LifelineRepository {
 
   public static getInstance(): LifelineRepository {
     if (!LifelineRepository.instance) {
-      LifelineRepository.instance = new LifelineRepository();
+      LifelineRepository.instance = new LifelineRepository(false);
     }
 
     return LifelineRepository.instance;

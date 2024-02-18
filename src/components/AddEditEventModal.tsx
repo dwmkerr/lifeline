@@ -11,7 +11,7 @@ import Stack from "@mui/joy/Stack";
 
 import { LifeEvent, EventCategory } from "../lib/LifeEvent";
 import { Checkbox, Textarea } from "@mui/joy";
-import { LifelineRepository } from "../lib/LifelifeRepository";
+import { LifelineRepository } from "../lib/LifelineRepository";
 import { useAlertContext } from "./AlertContext";
 import { LifelineError } from "../lib/Errors";
 import CategorySelect from "./CategorySelect";

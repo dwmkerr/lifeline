@@ -16,7 +16,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 
-import { LifelineRepository } from "../lib/LifelifeRepository";
+import { LifelineRepository } from "../lib/LifelineRepository";
 import { LifelineError } from "../lib/Errors";
 import { useDialogContext } from "./DialogContext";
 import { useAlertContext } from "./AlertContext";

@@ -7,7 +7,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 import UserMenuDropdown from "./UserMenuDropdown";
-import { LifelineRepository } from "../lib/LifelifeRepository";
+import { LifelineRepository } from "../lib/LifelineRepository";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { useDialogContext } from "./DialogContext";
 

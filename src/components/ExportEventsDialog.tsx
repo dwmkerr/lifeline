@@ -10,7 +10,7 @@ import { DialogActions, Input } from "@mui/joy";
 
 import DownloadIcon from "@mui/icons-material/Download";
 
-import { LifelineRepository } from "../lib/LifelifeRepository";
+import { LifelineRepository } from "../lib/LifelineRepository";
 import { exportCsv } from "../lib/LifelineCsv";
 
 interface ExportEventsDialogProps {

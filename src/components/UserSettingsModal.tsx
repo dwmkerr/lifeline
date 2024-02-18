@@ -8,7 +8,7 @@ import ModalDialog from "@mui/joy/ModalDialog";
 import DialogTitle from "@mui/joy/DialogTitle";
 import DialogContent from "@mui/joy/DialogContent";
 
-import { LifelineRepository } from "../lib/LifelifeRepository";
+import { LifelineRepository } from "../lib/LifelineRepository";
 import { useAlertContext } from "./AlertContext";
 import { LifelineError } from "../lib/Errors";
 import { UserSettings } from "../lib/UserSettings";

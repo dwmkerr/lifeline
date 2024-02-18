@@ -9,7 +9,7 @@ import Link from "@mui/joy/Link";
 import Typography from "@mui/joy/Typography";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { useAlertContext } from "../components/AlertContext";
-import { LifelineRepository } from "../lib/LifelifeRepository";
+import { LifelineRepository } from "../lib/LifelineRepository";
 import { LifelineError } from "../lib/Errors";
 
 import screenshot1 from "../images/screenshot-timeline.png";
