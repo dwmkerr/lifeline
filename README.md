@@ -130,9 +130,11 @@ Quick and dirty task list:
 - [x] feat: show warning to regularly export events
 - [x] feat: use cloud firestore rather than local
 - [x] feat: feedback option
-- [ ] feat: show version number in menu
+- [x] feat: show version number in menu
 
 **v0.3**
+
+- [ ] chore: fix version number to 0.x series
 
 - [ ] feat: watch for firestore errors, test with new site
 - [ ] feat: consider moving search and filters into a filters context so it can be set from anywhere, e.g. on a dropdown from the life events letting you filter to similar events
@@ -141,6 +143,7 @@ Quick and dirty task list:
 - [ ] bug: hard bug - category selection in the filters should be preserved when adding/deleting/changing events, first try caused them all to blank out, next try didn't pick up new ones, etc
 
 - [ ] minor bug: prevent focus for emoji picker?
+- [ ] build: 'yes/no' step on build to deploy firebase changes
 
 ### Epic - Demo lifelines
 
