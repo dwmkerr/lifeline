@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0](https://github.com/dwmkerr/lifeline/compare/v2.6.0...v0.2.0) (2024-02-19)
+
+
+### Miscellaneous Chores
+
+* release 0.2.0 ([80f66d3](https://github.com/dwmkerr/lifeline/commit/80f66d36efa56418db6467dce194b8fb032a2aa1))
+* release 0.2.0 ([c395c1e](https://github.com/dwmkerr/lifeline/commit/c395c1ec1577373926040332370fcfe6c6374e8e))
+
 ## [2.6.0](https://github.com/dwmkerr/lifeline/compare/v2.5.0...v2.6.0) (2024-02-18)
 
 
