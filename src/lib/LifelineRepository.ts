@@ -1,4 +1,4 @@
-import { FirebaseApp, initializeApp } from "firebase/app";
+import { FirebaseApp, FirebaseError, initializeApp } from "firebase/app";
 import { Auth, getAuth, signInWithPopup } from "firebase/auth";
 import {
   getFirestore,
@@ -54,8 +54,9 @@ const userSettingsConverter = {
     const settings = userSettings as UserSettings;
     return {
       ...settings,
-      dateOfBirth:
-        settings.dateOfBirth && Timestamp.fromDate(settings.dateOfBirth),
+      dateOfBirth: settings.dateOfBirth
+        ? settings.dateOfBirth && Timestamp.fromDate(settings.dateOfBirth)
+        : null,
     } as SerializableUserSettings;
   },
   fromFirestore(
@@ -105,14 +106,6 @@ export class LifelineRepository {
   public app: FirebaseApp;
   public auth: Auth;
   public db: Firestore;
-  private lifeEventsCollection: CollectionReference<
-    LifeEvent,
-    SerializableLifeEvent
-  >;
-  private userSettingsCollection: CollectionReference<
-    UserSettings,
-    SerializableUserSettings
-  >;
   private feedbackCollection: CollectionReference<Feedback, Feedback>;
 
   private constructor(emulator: boolean) {
@@ -122,13 +115,13 @@ export class LifelineRepository {
     if (emulator) {
       connectFirestoreEmulator(this.db, "127.0.0.1", 8080);
     }
-    this.lifeEventsCollection = collection(this.db, "lifeevents").withConverter(
-      lifeEventConverter,
-    );
-    this.userSettingsCollection = collection(
-      this.db,
-      "userSettings",
-    ).withConverter(userSettingsConverter);
+    // this.lifeEventsCollection = collection(this.db, "lifeevents").withConverter(
+    //   lifeEventConverter,
+    // );
+    // this.userSettingsCollection = collection(
+    //   this.db,
+    //   "userSettings",
+    // ).withConverter(userSettingsConverter);
     this.feedbackCollection = collection(this.db, "feedback").withConverter(
       feedbackConverter,
     );
@@ -142,25 +135,55 @@ export class LifelineRepository {
     return LifelineRepository.instance;
   }
 
+  public userLifeEventsCollection() {
+    const uid = this.requireUserId();
+    return collection(this.db, "users", uid, "lifeevents").withConverter(
+      lifeEventConverter,
+    );
+  }
+
+  public userSettingsCollection() {
+    const uid = this.requireUserId();
+    return collection(this.db, "users", uid, "settings").withConverter(
+      userSettingsConverter,
+    );
+  }
+
+  public requireUserId(): string {
+    const uid = this.getUser()?.uid;
+    if (!uid) {
+      throw new LifelineError(
+        "Database Error",
+        "User must be logged in to access events",
+      );
+    }
+    return uid;
+  }
+
   async load(): Promise<LifeEvent[]> {
-    const querySnapshot = await getDocs(this.lifeEventsCollection);
+    const querySnapshot = await getDocs(this.userLifeEventsCollection());
     const puzzles = querySnapshot.docs.map((doc) => doc.data());
     return puzzles;
   }
 
   subscribeToLifeEvents(
-    onLifeEvents: (lifeEvents: LifeEvent[]) => void,
     orderDirection: OrderByDirection,
+    onLifeEvents: (lifeEvents: LifeEvent[]) => void,
+    onError: (error: FirebaseError) => void,
   ): Unsubscribe {
     const q = query(
-      this.lifeEventsCollection,
+      this.userLifeEventsCollection(),
       orderBy("year", orderDirection),
       orderBy("month", orderDirection),
     );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const lifeEvents = querySnapshot.docs.map((doc) => doc.data());
-      onLifeEvents(lifeEvents);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (querySnapshot) => {
+        const lifeEvents = querySnapshot.docs.map((doc) => doc.data());
+        onLifeEvents(lifeEvents);
+      },
+      onError,
+    );
     return unsubscribe;
   }
 
@@ -168,7 +191,8 @@ export class LifelineRepository {
     id: string,
     onChange: (lifeEvent: LifeEvent) => void,
   ): Unsubscribe {
-    return onSnapshot(doc(this.lifeEventsCollection, id), (doc) => {
+    const docReference = doc(this.userLifeEventsCollection(), id);
+    return onSnapshot(docReference, (doc) => {
       const lifeEvent = doc.data();
       if (lifeEvent) {
         onChange(lifeEvent);
@@ -177,21 +201,15 @@ export class LifelineRepository {
   }
 
   async delete(id: string): Promise<void> {
-    const docRef = doc(this.lifeEventsCollection, id);
+    const docRef = doc(this.userLifeEventsCollection(), id);
     await deleteDoc(docRef);
   }
 
   async create(
     lifeEventWithoutId: Omit<LifeEvent, "id" | "userId" | "date">,
   ): Promise<LifeEvent> {
-    const uid = this.getUser()?.uid;
-    if (!uid) {
-      throw new LifelineError(
-        "Create Event Error",
-        "uid is null, cannot save to db",
-      );
-    }
-    const newDocumentReference = doc(this.lifeEventsCollection);
+    const uid = this.requireUserId();
+    const newDocumentReference = doc(this.userLifeEventsCollection());
     const lifeEvent: LifeEvent = {
       ...lifeEventWithoutId,
       id: newDocumentReference.id,
@@ -204,14 +222,14 @@ export class LifelineRepository {
   }
 
   async save(lifeEvent: LifeEvent): Promise<void> {
-    await setDoc(doc(this.lifeEventsCollection, lifeEvent.id), lifeEvent);
+    await setDoc(doc(this.userLifeEventsCollection(), lifeEvent.id), lifeEvent);
   }
 
   async update(
     id: string,
     fields: Partial<SerializableLifeEvent>,
   ): Promise<void> {
-    const docRef = doc(this.lifeEventsCollection, id);
+    const docRef = doc(this.userLifeEventsCollection(), id);
     await updateDoc(docRef, fields);
   }
 
@@ -220,17 +238,11 @@ export class LifelineRepository {
     deleteExistingEvents: boolean,
   ): Promise<void> {
     //  If we don't have a user, we are going to have to fail.
-    const uid = this.getUser()?.uid;
-    if (!uid) {
-      throw new LifelineError(
-        "Restore Error",
-        "Cannot restore events as the user is not logged in.",
-      );
-    }
+    const uid = this.requireUserId();
 
     //  If we are deleting events, delete them all.
     if (deleteExistingEvents) {
-      const querySnapshot = await getDocs(this.lifeEventsCollection);
+      const querySnapshot = await getDocs(this.userLifeEventsCollection());
       const deletePromises = querySnapshot.docs.map(async (doc) =>
         deleteDoc(doc.ref),
       );
@@ -238,11 +250,11 @@ export class LifelineRepository {
     }
 
     const promises = restorableLifeEvents.map(async (lifeEvent) => {
-      const newDocumentReference = doc(this.lifeEventsCollection);
+      const newDocumentReference = doc(this.userLifeEventsCollection());
 
       //  Load the puzzles into the database, but always set the user id.
       return await setDoc(
-        doc(this.lifeEventsCollection, newDocumentReference.id),
+        doc(this.userLifeEventsCollection(), newDocumentReference.id),
         {
           ...lifeEvent,
           userId: uid,
@@ -259,11 +271,8 @@ export class LifelineRepository {
   }
 
   async getUserSettings(): Promise<UserSettings> {
-    const uid = this.getUser()?.uid;
-    if (!uid) {
-      throw new LifelineError("Get Settings Error", "User is not logged in");
-    }
-    const docRef = doc(this.userSettingsCollection, uid);
+    const uid = this.requireUserId();
+    const docRef = doc(this.userSettingsCollection(), "settings");
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -280,11 +289,9 @@ export class LifelineRepository {
   subscribeToUserSettings(
     onChange: (userSettings: UserSettings) => void,
   ): Unsubscribe {
-    const uid = this.getUser()?.uid;
-    if (!uid) {
-      throw new LifelineError("Get Settings Error", "User is not logged in");
-    }
-    return onSnapshot(doc(this.userSettingsCollection, uid), (doc) => {
+    const uid = this.requireUserId();
+    const docRef = doc(this.userSettingsCollection(), "settings");
+    return onSnapshot(docRef, (doc) => {
       const userSettings = doc.data();
       if (userSettings) {
         onChange(userSettings);
@@ -296,10 +303,8 @@ export class LifelineRepository {
   }
 
   async saveUserSettings(userSettings: UserSettings): Promise<void> {
-    await setDoc(
-      doc(this.userSettingsCollection, userSettings.userId),
-      userSettings,
-    );
+    const docRef = doc(this.userSettingsCollection(), "settings");
+    await setDoc(docRef, userSettings);
   }
 
   async saveFeedback(feedback: Omit<Feedback, "userId">): Promise<void> {

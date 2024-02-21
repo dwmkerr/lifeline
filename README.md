@@ -14,6 +14,7 @@ https://lifeline.rocks
 - [Goals](#goals)
 - [Building the line](#building-the-line)
 - [TODO](#todo)
+    - [Epic - Blur Categories](#epic---blur-categories)
     - [Epic - Demo lifelines](#epic---demo-lifelines)
     - [Epic - Manage Categories](#epic---manage-categories)
     - [Epic Import Preview](#epic-import-preview)
@@ -55,7 +56,8 @@ open http://localhost:4000
 Deploy indexes and rules with:
 
 ```bash
-fireabase deploy --only firestore
+firebase deploy --only firestore:rules firestore:indexes
+
 ```
 
 ## Releasing
@@ -131,6 +133,9 @@ Quick and dirty task list:
 - [x] feat: use cloud firestore rather than local
 - [x] feat: feedback option
 - [x] feat: show version number in menu
+- [ ] fix: all events are viewable by all users
+- [ ] build: 'yes/no' step on build to deploy firebase changes - can you dry-run firebase for changes? If so the website deploy should also be gated in the same 'yes/no' step
+- [ ] feat: fix up autocomplete to use the same style of text entry as for tripweather
 
 **v0.3**
 
@@ -143,7 +148,18 @@ Quick and dirty task list:
 - [ ] bug: hard bug - category selection in the filters should be preserved when adding/deleting/changing events, first try caused them all to blank out, next try didn't pick up new ones, etc
 
 - [ ] minor bug: prevent focus for emoji picker?
-- [ ] build: 'yes/no' step on build to deploy firebase changes
+
+- [ ] feat: for emotional impact, option to toggle between category and impact in the timeline view
+
+Link domain
+“Search” category for events that need research
+“Don’t know” emoji for impact / severity
+add starting therapy in uk
+add cheltenham
+
+### Epic - Blur Categories
+
+Option to 'blur' categories so when sharing the screen the details are kept private.
 
 ### Epic - Demo lifelines
 
