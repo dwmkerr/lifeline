@@ -52,7 +52,7 @@ export default function LifelinePage(props: LifelinePageProps) {
     showFeedbackDialog,
     setShowFeedbackDialog,
   } = useDialogContext();
-  const [userSettings] = useState<UserSettings | null>(null);
+  const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
   const [lifeEvents, setLifeEvents] = useState<LifeEvent[]>([]);
   const [filteredLifeEvents, setFilteredLifeEvents] = useState<LifeEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -69,12 +69,23 @@ export default function LifelinePage(props: LifelinePageProps) {
     {},
   );
 
+  //  Watch for the user setings.
+  useEffect(() => {
+    repository.subscribeToUserSettings(setUserSettings);
+  }, []);
+
   useEffect(() => {
     try {
-      const unsubscribe = repository.subscribeToLifeEvents((lifeEvents) => {
-        setLifeEvents(lifeEvents);
-        setLoading(false);
-      }, sortDirection);
+      const unsubscribe = repository.subscribeToLifeEvents(
+        sortDirection,
+        (lifeEvents) => {
+          setLifeEvents(lifeEvents);
+          setLoading(false);
+        },
+        (error) => {
+          setAlertFromError(LifelineError.fromError("Database Error", error));
+        },
+      );
       return unsubscribe;
     } catch (err) {
       setAlertFromError(LifelineError.fromError("Load Events Error", err));
