@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.2](https://github.com/dwmkerr/lifeline/compare/v0.2.1...v0.2.2) (2024-02-21)
+
+
+### Bug Fixes
+
+* correct firebase rules ([#30](https://github.com/dwmkerr/lifeline/issues/30)) ([beaeb8d](https://github.com/dwmkerr/lifeline/commit/beaeb8dd1caec3bc140e7b3aba40ac99c38aa49c))
+* correct unit tests ([84a0c28](https://github.com/dwmkerr/lifeline/commit/84a0c28be3f3f7246c59cddab9f0cdb40c3aaa88))
+
 ## [0.2.1](https://github.com/dwmkerr/lifeline/compare/v0.2.0...v0.2.1) (2024-02-19)
 
 
