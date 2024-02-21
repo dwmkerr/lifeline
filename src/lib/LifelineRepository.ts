@@ -115,13 +115,6 @@ export class LifelineRepository {
     if (emulator) {
       connectFirestoreEmulator(this.db, "127.0.0.1", 8080);
     }
-    // this.lifeEventsCollection = collection(this.db, "lifeevents").withConverter(
-    //   lifeEventConverter,
-    // );
-    // this.userSettingsCollection = collection(
-    //   this.db,
-    //   "userSettings",
-    // ).withConverter(userSettingsConverter);
     this.feedbackCollection = collection(this.db, "feedback").withConverter(
       feedbackConverter,
     );

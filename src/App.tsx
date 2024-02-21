@@ -14,7 +14,6 @@ import LifelinePage from "./pages/LifelinePage";
 import { LifelineRepository } from "./lib/LifelineRepository";
 import { CircularProgress, Stack } from "@mui/joy";
 import WelcomePage from "./pages/WelcomePage";
-import { UserSettings } from "./lib/UserSettings";
 
 const materialTheme = materialExtendTheme();
 
