@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.3](https://github.com/dwmkerr/lifeline/compare/v0.2.2...v0.2.3) (2024-03-01)
+
+
+### Features
+
+* include date in default export filename ([848c4c7](https://github.com/dwmkerr/lifeline/commit/848c4c77cbc341d7415a697c17fa852dbdf68543))
+
+
+### Miscellaneous Chores
+
+* release 0.2.3 ([7bb8354](https://github.com/dwmkerr/lifeline/commit/7bb835451b12903dc1c888a3f1436ff103683ddd))
+
 ## [0.2.2](https://github.com/dwmkerr/lifeline/compare/v0.2.1...v0.2.2) (2024-02-21)
 
 
