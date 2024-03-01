@@ -20,7 +20,7 @@ interface ExportEventsDialogProps {
 export default function ExportEventsDialog(props: ExportEventsDialogProps) {
   const repository = LifelineRepository.getInstance();
 
-  const [fileName, setFileName] = useState<string>("lifeline.csv");
+  const [fileName, setFileName] = useState<string>(`${new Date().toISOString().substring(0, 10)}-lifeline.csv`);
   const [titleColumn, setTitleColumn] = useState<string>("Title");
   const [categoryColumn, setCategoryColumn] = useState("Category");
   const [yearColumn, setYearColumn] = useState("Year");
